@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Main page</title>
+</head>
+<body>
+    <a href="add_task">
+        <button type="button">Add Task</button>
+    </a>
+    <h1>Task List:</h1>
+    <ul>
+        {{range .}}
+        <li>{{.}}</li>
+        {{end}}
+    </ul>
+</body>
+</html>

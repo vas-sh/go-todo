@@ -18,7 +18,26 @@ func database() *sql.DB {
 	}
 	return db
 }
+func getTasksFromDB() ([]string, error) {
+	db := database()
+	defer db.Close()
+	rows, err := db.Query("SELECT my_task FROM task;")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var tasks []string
 
+	for rows.Next() {
+		var task string
+		err := rows.Scan(&task)
+		if err != nil {
+			return nil, err
+		}
+		tasks = append(tasks, task)
+	}
+	return tasks, err
+}
 func getTask(r *http.Request) (string, error) {
 	err := r.ParseForm()
 	if err != nil {
@@ -45,49 +64,57 @@ func addTaskToDB(task string) {
 	log.Println("Task secsesfuly added")
 }
 
+func renderTemplate(w http.ResponseWriter, r *http.Request, file_name string, tasks []string) {
+
+	t, err := template.ParseFiles(file_name)
+	if err != nil {
+		http.Error(w, "Error parsing template", http.StatusInternalServerError)
+		log.Println("Error parsing template:", err)
+		return
+	}
+
+	err = t.Execute(w, tasks)
+	if err != nil {
+		log.Println("Error rendering temlate")
+	}
+}
+
+func mainHendler(w http.ResponseWriter, r *http.Request) {
+	tasks, err := getTasksFromDB()
+	if err != nil {
+		log.Println("Error geting task from DB: ", err)
+		return
+	}
+	renderTemplate(w, r, "html/main.html", tasks)
+}
+
+func taskHendler(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, r, "html/add_task.html", nil)
+}
+
 func hendlerPost(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
-		if err := r.ParseForm(); err != nil {
+		err := r.ParseForm()
+		if err != nil {
 			http.Error(w, "Error parsing form", http.StatusBadRequest)
 			return
 		}
-	}
 
-	task, err := getTask(r)
-	if err != nil {
-		log.Printf("Error getting data from form: %s", err)
-	}
-	addTaskToDB(task)
-}
-
-func hendlerGet(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		t, err := template.ParseFiles("html/bace.html")
+		task, err := getTask(r)
 		if err != nil {
-			http.Error(w, "Error parsing template", http.StatusInternalServerError)
-			log.Println("Error parsing template:", err)
-			return
+			log.Println("Error getting data: ", err)
 		}
-
-		err = t.Execute(w, nil)
-		if err != nil {
-			http.Error(w, "Error rendering template", http.StatusInternalServerError)
-			log.Println("Error rendering template:", err)
-		}
+		addTaskToDB(task)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
+
 }
 
 func main() {
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodGet {
-			hendlerGet(w, r)
-		} else if r.Method == http.MethodPost {
-			hendlerPost(w, r)
-		} else {
-			log.Println("Method is not defineted")
-		}
-	})
+	http.HandleFunc("/", mainHendler)
+	http.HandleFunc("/add_task", taskHendler)
+	http.HandleFunc("/form", hendlerPost)
 
 	log.Println("Server started")
 	err := http.ListenAndServe(":8180", nil)
