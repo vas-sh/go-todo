@@ -81,8 +81,14 @@
     <h1>Task List:</h1>
     <ul>
         {{range .}}
-        <li>{{.}}</li>
+        <li>
+            {{.}}
+            <form action="/delete_task" method="POST" style="display: inline;">
+                <input type="hidden" name="task" value="{{.}}">
+                <button type="submit">Delete</button>
+            </form>
+        </li>
         {{end}}
-    </ul>
+    </ul>    
 </body>
 </html>

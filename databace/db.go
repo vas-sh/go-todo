@@ -58,5 +58,16 @@ func AddTaskToDB(task string) {
 		log.Printf("Error inserting value to db: %s", err)
 		return
 	}
-	log.Println("Task secsesfuly added")
+	log.Println("Task successfully added")
+}
+
+func DeleteTask(task string) {
+	f := "DELETE FROM task WHERE my_task = ($1)"
+	db := Database()
+	defer db.Close()
+	_, err := db.Exec(f, task)
+	if err != nil {
+		log.Println("Error deleting stask: ", err)
+	}
+	log.Println("Task successfully deleted")
 }

@@ -47,3 +47,15 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 func TaskHandler(w http.ResponseWriter, r *http.Request) {
 	RenderTemplate(w, r, "html/add_task.html", nil)
 }
+
+func DeleteTaskHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		err := r.ParseForm()
+		if err != nil {
+			log.Println("Error parsing form: ", err)
+		}
+	}
+	task := r.FormValue("task")
+	databace.DeleteTask(task)
+	http.Redirect(w, r, "/main", http.StatusSeeOther)
+}

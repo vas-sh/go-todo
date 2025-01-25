@@ -13,6 +13,7 @@ func main() {
 	http.HandleFunc("/main", handlers.MainHandler)
 	http.HandleFunc("/add_task", handlers.TaskHandler)
 	http.HandleFunc("/form", handlers.HandlerPost)
+	http.HandleFunc("/delete_task", handlers.DeleteTaskHandler)
 
 	log.Println("Server started")
 	err := http.ListenAndServe(":8180", nil)
