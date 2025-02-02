@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Main page</title>
+    <title>Home</title>
     <style>
         body {
             font-family: 'Poppins', Arial, sans-serif;
@@ -75,7 +75,7 @@
     </style>
 </head>
 <body>
-    <a href="add_task">
+    <a href="/add-task">
         <button type="button">Add Task</button>
     </a>
     <h1>Task List:</h1>
@@ -83,7 +83,7 @@
         {{range .}}
         <li>
             {{.}}
-            <form action="/delete_task" method="POST" style="display: inline;">
+            <form action="/delete-task" method="POST" style="display: inline;">
                 <input type="hidden" name="task" value="{{.}}">
                 <button type="submit">Delete</button>
             </form>
