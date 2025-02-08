@@ -17,9 +17,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	databace = databace.Debug()
+	err = db.Migrate(databace)
+	if err != nil {
+		log.Fatal(err)
+	}
 	taskRepo := taskrepo.New(databace)
 	taskSrv := task.New(taskRepo)
-	taskHandlers := taskhandlers.New(taskSrv)
+	taskHandlers, err := taskhandlers.New(taskSrv)
+	if err != nil {
+		log.Fatal(err)
+	}
 	taskHandlers.Register()
 	log.Println("Server started")
 	err = http.ListenAndServe(":8180", nil)

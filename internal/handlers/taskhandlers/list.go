@@ -10,5 +10,8 @@ func (h *handler) list(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	h.renderTemplate(w, "html/home.html", tasks)
+	err = h.homeTemplete.Execute(w, tasks)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
 }

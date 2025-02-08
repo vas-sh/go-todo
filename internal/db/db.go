@@ -1,9 +1,15 @@
 package db
 
 import (
-	"database/sql"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
-func New(dns string) (*sql.DB, error) {
-	return sql.Open("postgres", dns)
+func New(dns string) (*gorm.DB, error) {
+	return gorm.Open(postgres.Open(dns), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: false,
+		},
+	})
 }

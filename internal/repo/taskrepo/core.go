@@ -1,11 +1,13 @@
 package taskrepo
 
-import "database/sql"
+import (
+	"gorm.io/gorm"
+)
 
 type repo struct {
-	db *sql.DB
+	db *gorm.DB
 }
 
-func New(db *sql.DB) *repo {
+func New(db *gorm.DB) *repo {
 	return &repo{db: db}
 }

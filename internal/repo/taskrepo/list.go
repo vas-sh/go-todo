@@ -1,19 +1,20 @@
 package taskrepo
 
+import (
+	"github.com/vas-sh/todo/internal/models"
+)
+
 func (r *repo) List() ([]string, error) {
-	rows, err := r.db.Query("SELECT my_task FROM task;")
+	var tasks []models.Task
+	err := r.db.Find(&tasks).Error
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
-	var tasks []string
-	for rows.Next() {
-		var task string
-		err := rows.Scan(&task)
-		if err != nil {
-			return nil, err
-		}
-		tasks = append(tasks, task)
+
+	var names []string
+	for i := range tasks {
+
+		names = append(names, tasks[i].Title)
 	}
-	return tasks, err
+	return names, err
 }

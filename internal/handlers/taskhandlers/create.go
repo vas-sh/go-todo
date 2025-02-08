@@ -18,9 +18,12 @@ func (h *handler) create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	http.Redirect(w, r, "/home", http.StatusSeeOther)
+	http.Redirect(w, r, h.homePath, http.StatusSeeOther)
 }
 
 func (h *handler) createForm(w http.ResponseWriter, r *http.Request) {
-	h.renderTemplate(w, "html/add-task.html", nil)
+	err := h.createFormTemplate.Execute(w, nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
 }

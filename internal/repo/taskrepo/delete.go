@@ -1,7 +1,7 @@
 package taskrepo
 
+import "github.com/vas-sh/todo/internal/models"
+
 func (r *repo) Delete(name string) error {
-	f := "DELETE FROM task WHERE my_task = ($1)"
-	_, err := r.db.Exec(f, name)
-	return err
+	return r.db.Model(models.Task{}).Delete(models.Task{}, "title = ?", name).Error
 }
