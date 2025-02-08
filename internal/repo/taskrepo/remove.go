@@ -1,7 +1,11 @@
 package taskrepo
 
-import "github.com/vas-sh/todo/internal/models"
+import (
+	"context"
 
-func (r *repo) Remove(name string) error {
-	return r.db.Model(models.Task{}).Delete(models.Task{}, "title = ?", name).Error
+	"github.com/vas-sh/todo/internal/models"
+)
+
+func (r *repo) Remove(ctx context.Context, title string) error {
+	return r.db.WithContext(ctx).Model(models.Task{}).Delete(models.Task{}, "title = ?", title).Error
 }

@@ -1,5 +1,7 @@
 package task
 
-func (s *srv) List() ([]string, error) {
-	return s.repo.List()
+import "context"
+
+func (s *srv) List(ctx context.Context) ([]string, error) {
+	return s.repo.List(ctx)
 }

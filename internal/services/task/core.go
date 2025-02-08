@@ -1,9 +1,11 @@
 package task
 
+import "context"
+
 type repoer interface {
-	Create(name string) error
-	Remove(name string) error
-	List() ([]string, error)
+	Create(ctx context.Context, title string) error
+	Remove(ctx context.Context, title string) error
+	List(ctx context.Context) ([]string, error)
 }
 
 type srv struct {

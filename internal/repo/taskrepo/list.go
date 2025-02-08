@@ -1,12 +1,14 @@
 package taskrepo
 
 import (
+	"context"
+
 	"github.com/vas-sh/todo/internal/models"
 )
 
-func (r *repo) List() ([]string, error) {
+func (r *repo) List(ctx context.Context) ([]string, error) {
 	var tasks []models.Task
-	err := r.db.Find(&tasks).Error
+	err := r.db.WithContext(ctx).Find(&tasks).Error
 	if err != nil {
 		return nil, err
 	}

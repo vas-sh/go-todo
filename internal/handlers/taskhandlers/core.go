@@ -1,14 +1,15 @@
 package taskhandlers
 
 import (
+	"context"
 	"html/template"
 	"net/http"
 )
 
 type serviceer interface {
-	Create(name string) error
-	Remove(name string) error
-	List() ([]string, error)
+	Create(ctx context.Context, title string) error
+	Remove(ctx context.Context, title string) error
+	List(ctx context.Context) ([]string, error)
 }
 
 type handler struct {

@@ -4,8 +4,8 @@ import (
 	"net/http"
 )
 
-func (h *handler) list(w http.ResponseWriter, _ *http.Request) {
-	tasks, err := h.srv.List()
+func (h *handler) list(w http.ResponseWriter, r *http.Request) {
+	tasks, err := h.srv.List(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
