@@ -21,9 +21,10 @@ func (h *handler) create(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, h.homePath, http.StatusSeeOther)
 }
 
-func (h *handler) createForm(w http.ResponseWriter, r *http.Request) {
+func (h *handler) createForm(w http.ResponseWriter, _ *http.Request) {
 	err := h.createFormTemplate.Execute(w, nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 }

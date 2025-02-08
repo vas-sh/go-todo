@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-func (h *handler) delete(w http.ResponseWriter, r *http.Request) {
+func (h *handler) remove(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		return
 	}
@@ -13,7 +13,7 @@ func (h *handler) delete(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = h.srv.Delete(name)
+	err = h.srv.Remove(name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

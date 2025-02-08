@@ -2,7 +2,7 @@ package task
 
 type repoer interface {
 	Create(name string) error
-	Delete(name string) error
+	Remove(name string) error
 	List() ([]string, error)
 }
 

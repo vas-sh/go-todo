@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-func (h *handler) list(w http.ResponseWriter, r *http.Request) {
+func (h *handler) list(w http.ResponseWriter, _ *http.Request) {
 	tasks, err := h.srv.List()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -13,5 +13,6 @@ func (h *handler) list(w http.ResponseWriter, r *http.Request) {
 	err = h.homeTemplete.Execute(w, tasks)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 }

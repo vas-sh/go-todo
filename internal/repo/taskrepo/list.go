@@ -13,7 +13,6 @@ func (r *repo) List() ([]string, error) {
 
 	var names []string
 	for i := range tasks {
-
 		names = append(names, tasks[i].Title)
 	}
 	return names, err

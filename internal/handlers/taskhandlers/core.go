@@ -7,7 +7,7 @@ import (
 
 type serviceer interface {
 	Create(name string) error
-	Delete(name string) error
+	Remove(name string) error
 	List() ([]string, error)
 }
 
@@ -39,5 +39,5 @@ func (h *handler) Register() {
 	http.HandleFunc(h.homePath, h.list)
 	http.HandleFunc("/add-task", h.createForm)
 	http.HandleFunc("/create-task", h.create)
-	http.HandleFunc("/delete-task", h.delete)
+	http.HandleFunc("/delete-task", h.remove)
 }
