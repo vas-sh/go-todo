@@ -6,9 +6,9 @@ import (
 	"github.com/vas-sh/todo/internal/models"
 )
 
-func (s *srv) Create(ctx context.Context, title string) error {
+func (s *srv) Create(ctx context.Context, title, description string) error {
 	if title == "" {
 		return models.ErrValueEmpty
 	}
-	return s.repo.Create(ctx, title)
+	return s.repo.Create(ctx, title, description)
 }

@@ -8,12 +8,12 @@ func (h *handler) create(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		return
 	}
-	title, err := h.title(r)
+	body, err := h.body(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = h.srv.Create(r.Context(), title)
+	err = h.srv.Create(r.Context(), body.title, body.description)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

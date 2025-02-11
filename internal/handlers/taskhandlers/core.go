@@ -4,12 +4,14 @@ import (
 	"context"
 	"html/template"
 	"net/http"
+
+	"github.com/vas-sh/todo/internal/models"
 )
 
 type serviceer interface {
-	Create(ctx context.Context, title string) error
-	Remove(ctx context.Context, title string) error
-	List(ctx context.Context) ([]string, error)
+	Create(ctx context.Context, title, description string) error
+	Remove(ctx context.Context, id int64) error
+	List(ctx context.Context) ([]models.Task, error)
 }
 
 type handler struct {

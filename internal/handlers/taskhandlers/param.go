@@ -2,11 +2,18 @@ package taskhandlers
 
 import "net/http"
 
-func (*handler) title(r *http.Request) (string, error) {
+type taskBody struct {
+	title       string
+	description string
+}
+
+func (*handler) body(r *http.Request) (taskBody, error) {
 	err := r.ParseForm()
 	if err != nil {
-		return "", err
+		return taskBody{}, err
 	}
-	task := r.FormValue("task")
-	return task, nil
+	return taskBody{
+		title:       r.FormValue("title"),
+		description: r.FormValue("description"),
+	}, nil
 }

@@ -82,9 +82,9 @@
     <ul>
         {{range .}}
         <li>
-            {{.}}
+            {{.Title}} - {{.Description}}
             <form action="/delete-task" method="POST" style="display: inline;">
-                <input type="hidden" name="task" value="{{.}}">
+                <input type="hidden" name="id" value="{{.ID}}">
                 <button type="submit">Delete</button>
             </form>
         </li>

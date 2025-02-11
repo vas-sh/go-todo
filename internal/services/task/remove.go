@@ -6,9 +6,9 @@ import (
 	"github.com/vas-sh/todo/internal/models"
 )
 
-func (s *srv) Remove(ctx context.Context, title string) error {
-	if title == "" {
+func (s *srv) Remove(ctx context.Context, id int64) error {
+	if id <= 0 {
 		return models.ErrValueEmpty
 	}
-	return s.repo.Remove(ctx, title)
+	return s.repo.Remove(ctx, id)
 }
