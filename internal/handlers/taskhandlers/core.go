@@ -3,8 +3,8 @@ package taskhandlers
 import (
 	"context"
 	"html/template"
-	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/vas-sh/todo/internal/models"
 )
 
@@ -38,9 +38,11 @@ func New(srv serviceer) (*handler, error) {
 	}, nil
 }
 
-func (h *handler) Register() {
-	http.HandleFunc(h.homePath, h.list)
-	http.HandleFunc("/add-task", h.createForm)
-	http.HandleFunc("/create-task", h.create)
-	http.HandleFunc("/delete-task", h.remove)
+func (h *handler) Register() error {
+	r := gin.Default()
+	r.GET(h.homePath, h.home)
+	r.GET("/add-task", h.addTask)
+	r.POST("/create-task", h.create)
+	r.POST("/delete-task", h.remove)
+	return r.Run()
 }

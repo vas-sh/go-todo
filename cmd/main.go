@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 
 	_ "github.com/lib/pq"
 	"github.com/vas-sh/todo/internal/db"
@@ -28,9 +27,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	taskHandlers.Register()
-	log.Println("Server started")
-	err = http.ListenAndServe(":8180", nil)
+	err = taskHandlers.Register()
 	if err != nil {
 		log.Fatal(err)
 	}
