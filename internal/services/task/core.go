@@ -6,6 +6,8 @@ import (
 	"github.com/vas-sh/todo/internal/models"
 )
 
+//go:generate mockgen -source=core.go -destination=mocks/mocks.go -package mocks
+
 type repoer interface {
 	Create(ctx context.Context, title, description string) error
 	Remove(ctx context.Context, id int64) error
