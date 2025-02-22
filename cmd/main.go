@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	dns := "host=localhost user=vas password=2222 dbname=test_db port=5432 sslmode=disable TimeZone=Europe/Kiev"
+	dns := "host=localhost user=todouser password=2222 dbname=tododb port=5432 sslmode=disable TimeZone=Europe/Kiev"
 	databace, err := db.New(dns)
 	if err != nil {
 		log.Fatal(err)
