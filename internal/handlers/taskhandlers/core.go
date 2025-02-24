@@ -45,5 +45,7 @@ func (h *handler) Register() error {
 	r.POST("/create-task", h.create)
 	r.POST("/delete-task", h.remove)
 	r.GET("/api/tasks", h.homeAPI)
+	r.POST("/api/create", h.createAPI)
+	r.POST("/api/remove", h.apiRemove)
 	return r.Run()
 }
