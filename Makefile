@@ -12,3 +12,7 @@ start-db:
 	sudo docker start b80def1bbda0
 stop-db:
 	sudo docker stop b80def1bbda0
+install-mock:
+	go install go.uber.org/mock/mockgen@latest
+gen:
+	go generate ./...

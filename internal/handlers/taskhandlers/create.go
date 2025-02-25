@@ -7,8 +7,8 @@ import (
 )
 
 type taskBody struct {
-	Title       string `form:"title"`
-	Description string `form:"description"`
+	Title       string `form:"title" json:"title"`
+	Description string `form:"description" json:"description"`
 }
 
 func (h *handler) create(c *gin.Context) {
@@ -18,7 +18,7 @@ func (h *handler) create(c *gin.Context) {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = h.srv.Create(c.Request.Context(), body.Title, body.Description)
+	_, err = h.srv.Create(c.Request.Context(), body.Title, body.Description)
 	if err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
@@ -35,17 +35,16 @@ func (h *handler) addTask(c *gin.Context) {
 }
 
 func (h *handler) createAPI(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*")
 	var body taskBody
 	err := c.Bind(&body)
 	if err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = h.srv.Create(c.Request.Context(), body.Title, body.Description)
+	task, err := h.srv.Create(c.Request.Context(), body.Title, body.Description)
 	if err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	c.JSON(http.StatusOK, body)
+	c.JSON(http.StatusOK, task)
 }

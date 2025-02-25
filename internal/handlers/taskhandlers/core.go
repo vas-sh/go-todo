@@ -9,7 +9,7 @@ import (
 )
 
 type serviceer interface {
-	Create(ctx context.Context, title, description string) error
+	Create(ctx context.Context, title, description string) (models.Task, error)
 	Remove(ctx context.Context, id int64) error
 	List(ctx context.Context) ([]models.Task, error)
 }
@@ -40,12 +40,17 @@ func New(srv serviceer) (*handler, error) {
 
 func (h *handler) Register() error {
 	r := gin.Default()
+	r.Use(func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Next()
+	})
 	r.GET(h.homePath, h.home)
 	r.GET("/add-task", h.addTask)
 	r.POST("/create-task", h.create)
 	r.POST("/delete-task", h.remove)
-	r.GET("/api/tasks", h.homeAPI)
-	r.POST("/api/create", h.createAPI)
-	r.POST("/api/remove", h.apiRemove)
+	tasksRouter := r.Group("/api/tasks")
+	tasksRouter.GET("", h.homeAPI)
+	tasksRouter.POST("", h.createAPI)
+	tasksRouter.DELETE("", h.removeAPI)
 	return r.Run()
 }
