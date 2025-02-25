@@ -27,7 +27,7 @@ func (h *handler) remove(c *gin.Context) {
 }
 
 func (h *handler) removeAPI(c *gin.Context) {
-	id, err := strconv.Atoi(c.Request.FormValue("id"))
+	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return

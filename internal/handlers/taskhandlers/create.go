@@ -7,8 +7,8 @@ import (
 )
 
 type taskBody struct {
-	Title       string `form:"title" json:"title"`
-	Description string `form:"description" json:"description"`
+	Title       string `json:"title" form:"title"`
+	Description string `json:"description" form:"description"`
 }
 
 func (h *handler) create(c *gin.Context) {
