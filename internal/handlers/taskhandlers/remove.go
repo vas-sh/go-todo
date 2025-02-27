@@ -37,5 +37,5 @@ func (h *handler) removeAPI(c *gin.Context) {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	c.JSON(http.StatusOK, id)
+	c.JSON(http.StatusNoContent, nil)
 }

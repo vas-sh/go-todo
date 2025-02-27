@@ -42,6 +42,7 @@ func (h *handler) Register() error {
 	r := gin.Default()
 	r.Use(func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE")
 		c.Next()
 	})
 	r.GET(h.homePath, h.home)
@@ -52,5 +53,6 @@ func (h *handler) Register() error {
 	tasksRouter.GET("", h.homeAPI)
 	tasksRouter.POST("", h.createAPI)
 	tasksRouter.DELETE("", h.removeAPI)
+	tasksRouter.OPTIONS("", func(_ *gin.Context) {})
 	return r.Run()
 }
