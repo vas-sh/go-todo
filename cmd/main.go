@@ -23,10 +23,7 @@ func main() {
 	}
 	taskRepo := taskrepo.New(databace)
 	taskSrv := task.New(taskRepo)
-	taskHandlers, err := taskhandlers.New(taskSrv)
-	if err != nil {
-		log.Fatal(err)
-	}
+	taskHandlers := taskhandlers.New(taskSrv)
 	err = taskHandlers.Register()
 	if err != nil {
 		log.Fatal(err)

@@ -7,19 +7,25 @@ import (
 	"testing"
 )
 
+const (
+	taskPath = "tasks"
+	rootURL  = "http://localhost:8080/api/"
+)
+
 type requestParam struct {
 	endpoint string
 	body     io.Reader
+	method   string
 }
 
 func sendRequest(t *testing.T, ctx context.Context, param requestParam, wantStatus int) []byte {
 	t.Helper()
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, "http://localhost:8080/"+param.endpoint, param.body)
+	req, err := http.NewRequestWithContext(ctx, param.method, rootURL+param.endpoint, param.body)
 	if err != nil {
 		t.Error(err)
 		return nil
 	}
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Content-Type", "application/json")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Error(err)
