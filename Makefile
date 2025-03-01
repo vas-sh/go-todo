@@ -5,7 +5,7 @@ run:
 integration-test:
 	go test ./integration-tests/... -count=1
 unit-test:
-	go test ./internal/... -count=1
+	go test ./internal/... -count=1 -cover
 create-db:
 	sudo docker run -e POSTGRES_DB=tododb -e POSTGRES_USER=todouser -e POSTGRES_PASSWORD=2222 -d -p 5432:5432 postgres:17.4-alpine3.21
 start-db:

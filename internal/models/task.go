@@ -14,4 +14,6 @@ type Task struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Status      Status `json:"status" gorm:"type:task_status"`
+	UserID      *int64 `json:"-"`
+	User        User
 }
