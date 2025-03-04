@@ -1,4 +1,4 @@
-package taskhandlers
+package userhandlers
 
 import (
 	"context"
@@ -8,9 +8,8 @@ import (
 )
 
 type serviceer interface {
-	Create(ctx context.Context, title, description string) (models.Task, error)
+	SignUp(ctx context.Context, body models.CreateUserBody) (*models.User, error)
 	Remove(ctx context.Context, id int64) error
-	List(ctx context.Context) ([]models.Task, error)
 }
 
 type handler struct {
@@ -24,9 +23,9 @@ func New(srv serviceer) *handler {
 }
 
 func (h *handler) Register(router *gin.RouterGroup) {
-	tasksRouter := router.Group("tasks")
-	tasksRouter.GET("", h.list)
-	tasksRouter.POST("", h.create)
-	tasksRouter.DELETE("", h.remove)
-	tasksRouter.OPTIONS("", func(_ *gin.Context) {})
+	usersRouter := router.Group("users")
+	usersRouter.POST("/sign-up", h.signUp)
+	usersRouter.DELETE("", h.remove)
+	usersRouter.OPTIONS("", func(_ *gin.Context) {})
+	usersRouter.OPTIONS("/:r", func(_ *gin.Context) {})
 }

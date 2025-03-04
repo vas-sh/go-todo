@@ -8,8 +8,6 @@ import (
 )
 
 func TestPrepareUser(t *testing.T) {
-	email := "test.email@gmail.com"
-	var phone int64 = 1111
 	testCases := []struct {
 		name string
 		body models.CreateUserBody
@@ -21,13 +19,11 @@ func TestPrepareUser(t *testing.T) {
 			body: models.CreateUserBody{
 				Name:     "John",
 				Email:    "test.email@gmail.com",
-				Phone:    1111,
 				Password: "somepassword",
 			},
 			want: &models.User{
 				Name:  "John",
-				Email: &email,
-				Phone: &phone,
+				Email: "test.email@gmail.com",
 			},
 		},
 		{
@@ -39,26 +35,13 @@ func TestPrepareUser(t *testing.T) {
 			},
 			want: &models.User{
 				Name:  "John",
-				Email: &email,
-			},
-		},
-		{
-			name: "ok; only phone",
-			body: models.CreateUserBody{
-				Name:     "John",
-				Phone:    1111,
-				Password: "somepassword",
-			},
-			want: &models.User{
-				Name:  "John",
-				Phone: &phone,
+				Email: "test.email@gmail.com",
 			},
 		},
 		{
 			name: "name is missing",
 			body: models.CreateUserBody{
 				Email:    "test.email@gmail.com",
-				Phone:    1111,
 				Password: "somepassword",
 			},
 			err: models.ErrNameEmpty,
@@ -68,16 +51,15 @@ func TestPrepareUser(t *testing.T) {
 			body: models.CreateUserBody{
 				Name:  "John",
 				Email: "test.email@gmail.com",
-				Phone: 1111,
 			},
 			err: models.ErrPasswordEmpty,
 		},
 		{
-			name: "email and phone are missing",
+			name: "email is missing",
 			body: models.CreateUserBody{
 				Name: "John",
 			},
-			err: models.ErrEmailOrPhoneRequired,
+			err: models.ErrEmailRequired,
 		},
 	}
 	for _, ts := range testCases {

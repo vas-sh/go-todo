@@ -4,11 +4,26 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"testing"
+
+	"github.com/vas-sh/todo/internal/models"
 )
 
-func TestCreateAndDelete(t *testing.T) {
+const taskPath = "tasks"
+
+func parseTaskID(t *testing.T, resp []byte) string {
+	t.Helper()
+	var task models.Task
+	err := json.Unmarshal(resp, &task)
+	if err != nil {
+		t.Errorf("cannot unmarshal task: %s - %s", resp, err)
+	}
+	return fmt.Sprint(task.ID)
+}
+
+func TestCreateAndDeleteTask(t *testing.T) {
 	ctx := context.Background()
 	body := map[string]string{
 		"title":       "Homework",
@@ -26,7 +41,7 @@ func TestCreateAndDelete(t *testing.T) {
 	}
 	resp := sendRequest(t, ctx, param, http.StatusOK)
 
-	id := parseID(t, resp)
+	id := parseTaskID(t, resp)
 	param = requestParam{
 		endpoint: taskPath + "?id=" + id,
 		method:   http.MethodDelete,

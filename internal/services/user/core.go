@@ -8,6 +8,7 @@ import (
 
 type repoer interface {
 	Create(ctx context.Context, user *models.User) error
+	Remove(ctx context.Context, id int64) error
 }
 
 type srv struct {

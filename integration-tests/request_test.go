@@ -8,8 +8,7 @@ import (
 )
 
 const (
-	taskPath = "tasks"
-	rootURL  = "http://localhost:8080/api/"
+	rootURL = "http://localhost:8080/api/"
 )
 
 type requestParam struct {
