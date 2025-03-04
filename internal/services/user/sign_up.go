@@ -19,7 +19,7 @@ func (s *srv) SignUp(ctx context.Context, body models.CreateUserBody) (*models.U
 	return user, nil
 }
 
-func (s *srv) prepareUser(body models.CreateUserBody) (*models.User, error) {
+func (*srv) prepareUser(body models.CreateUserBody) (*models.User, error) {
 	if body.Name == "" {
 		return nil, models.ErrNameEmpty
 	}
