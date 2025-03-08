@@ -10,15 +10,18 @@ import (
 type serviceer interface {
 	SignUp(ctx context.Context, body models.CreateUserBody) (*models.User, error)
 	Remove(ctx context.Context, id int64) error
+	Login(ctx context.Context, email, password string) (models.User, error)
 }
 
 type handler struct {
-	srv serviceer
+	srv       serviceer
+	secretJWT string
 }
 
-func New(srv serviceer) *handler {
+func New(srv serviceer, secretJWT string) *handler {
 	return &handler{
-		srv: srv,
+		srv:       srv,
+		secretJWT: secretJWT,
 	}
 }
 
@@ -28,4 +31,5 @@ func (h *handler) Register(router *gin.RouterGroup) {
 	usersRouter.DELETE("", h.remove)
 	usersRouter.OPTIONS("", func(_ *gin.Context) {})
 	usersRouter.OPTIONS("/:r", func(_ *gin.Context) {})
+	usersRouter.POST("/login", h.login)
 }

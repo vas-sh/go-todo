@@ -4,6 +4,7 @@ import (
 	"log"
 
 	_ "github.com/lib/pq"
+	"github.com/vas-sh/todo/internal/config"
 	"github.com/vas-sh/todo/internal/db"
 	"github.com/vas-sh/todo/internal/handlers"
 	"github.com/vas-sh/todo/internal/handlers/taskhandlers"
@@ -34,7 +35,7 @@ func main() {
 	server := handlers.New()
 	router := server.Router()
 	taskhandlers.New(taskSrv).Register(router)
-	userhandlers.New(userSrv).Register(router)
+	userhandlers.New(userSrv, config.Config.SecretJWT).Register(router)
 
 	err = server.Run()
 	if err != nil {

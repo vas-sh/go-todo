@@ -13,3 +13,8 @@ type CreateUserBody struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+type LoginBody struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}

@@ -9,6 +9,7 @@ import (
 type repoer interface {
 	Create(ctx context.Context, user *models.User) error
 	Remove(ctx context.Context, id int64) error
+	GetByEmail(ctx context.Context, email string) (user models.User, err error)
 }
 
 type srv struct {
