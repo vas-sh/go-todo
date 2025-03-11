@@ -25,11 +25,13 @@ func New(srv serviceer, secretJWT string) *handler {
 	}
 }
 
-func (h *handler) Register(router *gin.RouterGroup) {
-	usersRouter := router.Group("users")
-	usersRouter.POST("/sign-up", h.signUp)
-	usersRouter.DELETE("", h.remove)
-	usersRouter.OPTIONS("", func(_ *gin.Context) {})
-	usersRouter.OPTIONS("/:r", func(_ *gin.Context) {})
-	usersRouter.POST("/login", h.login)
+func (h *handler) Register(anonRouter *gin.RouterGroup, authRouter *gin.RouterGroup) {
+	usersAnonRouter := anonRouter.Group("users")
+	usersAnonRouter.POST("/sign-up", h.signUp)
+	usersAnonRouter.OPTIONS("", func(_ *gin.Context) {})
+	usersAnonRouter.OPTIONS("/:r", func(_ *gin.Context) {})
+	usersAnonRouter.POST("/login", h.login)
+
+	usersAuthRouter := authRouter.Group("users")
+	usersAuthRouter.DELETE("", h.remove)
 }

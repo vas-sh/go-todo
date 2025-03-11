@@ -1,6 +1,7 @@
 package userhandlers
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
 
@@ -22,11 +23,16 @@ func (h *handler) login(c *gin.Context) {
 		return
 	}
 	now := time.Now()
+	out, err := json.Marshal(user)
+	if err != nil {
+		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
+		return
+	}
 	claims := jwt.MapClaims{
-		"user": user,
-		"iat":  now.Unix(),
-		"hbf":  now.Unix(),
-		"exp":  now.Add(time.Hour * 24 * 30).Unix(),
+		models.UserContextKey: string(out),
+		"iat":                 now.Unix(),
+		"hbf":                 now.Unix(),
+		"exp":                 now.Add(time.Hour * 24 * 30).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenStr, err := token.SignedString([]byte(h.secretJWT))

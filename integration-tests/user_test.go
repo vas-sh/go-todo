@@ -52,7 +52,7 @@ func TestSignUp(t *testing.T) {
 		t.Error(cmp.Diff(user, want))
 	}
 
-	login(t, models.LoginBody{
+	token := login(t, models.LoginBody{
 		Username: body.Email,
 		Password: body.Password,
 	})
@@ -60,15 +60,16 @@ func TestSignUp(t *testing.T) {
 	param = requestParam{
 		endpoint: userPath + "?id=" + fmt.Sprint((user.ID)),
 		method:   http.MethodDelete,
+		token:    token,
 	}
 	sendRequest(t, ctx, param, http.StatusNoContent)
 }
 
-func login(t *testing.T, body models.LoginBody) {
+func login(t *testing.T, body models.LoginBody) string {
 	out, err := json.Marshal(body)
 	if err != nil {
 		t.Error(err)
-		return
+		return ""
 	}
 
 	param := requestParam{
@@ -84,7 +85,7 @@ func login(t *testing.T, body models.LoginBody) {
 	err = json.Unmarshal(resp, &jwtToken)
 	if err != nil {
 		t.Error(err)
-		return
+		return ""
 	}
 	if jwtToken.Type != "JWT" {
 		t.Errorf("want: 'JWT', got: %q", jwtToken.Type)
@@ -92,4 +93,5 @@ func login(t *testing.T, body models.LoginBody) {
 	if jwtToken.Token == "" {
 		t.Errorf("got empty token")
 	}
+	return jwtToken.Type + " " + jwtToken.Token
 }

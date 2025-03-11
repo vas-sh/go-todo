@@ -1,5 +1,7 @@
 package models
 
+const UserContextKey = "user"
+
 type User struct {
 	ID        int64  `json:"id" gorm:"primary_key"`
 	Name      string `json:"name"`

@@ -37,7 +37,7 @@ func (s *srv) GetUser(auth string) (*models.User, error) {
 	if !ok {
 		return nil, models.ErrInvalidToken
 	}
-	userStr, ok := claim["user"].(string)
+	userStr, ok := claim[models.UserContextKey].(string)
 	if !ok {
 		return nil, models.ErrInvalidToken
 	}

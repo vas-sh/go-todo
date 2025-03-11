@@ -15,6 +15,7 @@ type requestParam struct {
 	endpoint string
 	body     io.Reader
 	method   string
+	token    string
 }
 
 func sendRequest(t *testing.T, ctx context.Context, param requestParam, wantStatus int) []byte {
@@ -25,6 +26,9 @@ func sendRequest(t *testing.T, ctx context.Context, param requestParam, wantStat
 		return nil
 	}
 	req.Header.Add("Content-Type", "application/json")
+	if param.token != "" {
+		req.Header.Add("Authorization", param.token)
+	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Error(err)

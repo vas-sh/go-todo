@@ -11,6 +11,7 @@ import (
 	"github.com/vas-sh/todo/internal/handlers/userhandlers"
 	"github.com/vas-sh/todo/internal/repo/taskrepo"
 	"github.com/vas-sh/todo/internal/repo/userrepo"
+	"github.com/vas-sh/todo/internal/services/jwttoken"
 	"github.com/vas-sh/todo/internal/services/task"
 	"github.com/vas-sh/todo/internal/services/user"
 )
@@ -32,10 +33,12 @@ func main() {
 	userRepo := userrepo.New(databace)
 	userSrv := user.New(userRepo)
 
-	server := handlers.New()
-	router := server.Router()
-	taskhandlers.New(taskSrv).Register(router)
-	userhandlers.New(userSrv, config.Config.SecretJWT).Register(router)
+	userFetcher := jwttoken.New(config.Config.SecretJWT)
+	server := handlers.New(userFetcher)
+	anonRouter := server.AnonRouter()
+	authRouter := server.AuthRouter()
+	taskhandlers.New(taskSrv).Register(anonRouter)
+	userhandlers.New(userSrv, config.Config.SecretJWT).Register(anonRouter, authRouter)
 
 	err = server.Run()
 	if err != nil {
