@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/vas-sh/todo/internal/userhelper"
 )
 
 type taskBody struct {
@@ -18,7 +19,8 @@ func (h *handler) create(c *gin.Context) {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	task, err := h.srv.Create(c.Request.Context(), body.Title, body.Description)
+	user := userhelper.MustFromContext(c)
+	task, err := h.srv.Create(c.Request.Context(), body.Title, body.Description, user.ID)
 	if err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return

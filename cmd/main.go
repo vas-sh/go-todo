@@ -37,7 +37,7 @@ func main() {
 	server := handlers.New(userFetcher)
 	anonRouter := server.AnonRouter()
 	authRouter := server.AuthRouter()
-	taskhandlers.New(taskSrv).Register(anonRouter)
+	taskhandlers.New(taskSrv).Register(authRouter)
 	userhandlers.New(userSrv, config.Config.SecretJWT).Register(anonRouter, authRouter)
 
 	err = server.Run()

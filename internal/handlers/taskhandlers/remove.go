@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/vas-sh/todo/internal/userhelper"
 )
 
 func (h *handler) remove(c *gin.Context) {
@@ -13,7 +14,8 @@ func (h *handler) remove(c *gin.Context) {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = h.srv.Remove(c.Request.Context(), int64(id))
+	user := userhelper.MustFromContext(c)
+	err = h.srv.Remove(c.Request.Context(), int64(id), user.ID)
 	if err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return

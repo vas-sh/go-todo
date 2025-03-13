@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -25,44 +24,8 @@ func parseUser(t *testing.T, resp []byte) models.User {
 }
 
 func TestSignUp(t *testing.T) {
-	ctx := context.Background()
-	body := models.CreateUserBody{
-		Name:     "Jhon",
-		Email:    "john@gmail.com",
-		Password: "1111",
-	}
-	out, err := json.Marshal(body)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	param := requestParam{
-		endpoint: userPath + "/sign-up",
-		body:     bytes.NewReader(out),
-		method:   http.MethodPost,
-	}
-	resp := sendRequest(t, ctx, param, http.StatusOK)
-	user := parseUser(t, resp)
-	want := models.User{
-		Name:  body.Name,
-		Email: body.Email,
-		ID:    user.ID,
-	}
-	if user != want {
-		t.Error(cmp.Diff(user, want))
-	}
-
-	token := login(t, models.LoginBody{
-		Username: body.Email,
-		Password: body.Password,
-	})
-
-	param = requestParam{
-		endpoint: userPath + "?id=" + fmt.Sprint((user.ID)),
-		method:   http.MethodDelete,
-		token:    token,
-	}
-	sendRequest(t, ctx, param, http.StatusNoContent)
+	token := createUserAndLogin(t)
+	userTearDown(t, token)
 }
 
 func login(t *testing.T, body models.LoginBody) string {
@@ -94,4 +57,50 @@ func login(t *testing.T, body models.LoginBody) string {
 		t.Errorf("got empty token")
 	}
 	return jwtToken.Type + " " + jwtToken.Token
+}
+
+func createUserAndLogin(t *testing.T) string {
+	t.Helper()
+	ctx := context.Background()
+	body := models.CreateUserBody{
+		Name:     "Jhon",
+		Email:    "john@gmail.com",
+		Password: "1111",
+	}
+	out, err := json.Marshal(body)
+	if err != nil {
+		t.Error(err)
+		return ""
+	}
+	param := requestParam{
+		endpoint: userPath + "/sign-up",
+		body:     bytes.NewReader(out),
+		method:   http.MethodPost,
+	}
+	resp := sendRequest(t, ctx, param, http.StatusOK)
+	user := parseUser(t, resp)
+	want := models.User{
+		Name:  body.Name,
+		Email: body.Email,
+		ID:    user.ID,
+	}
+	if user != want {
+		t.Error(cmp.Diff(user, want))
+	}
+
+	token := login(t, models.LoginBody{
+		Username: body.Email,
+		Password: body.Password,
+	})
+	return token
+}
+
+func userTearDown(t *testing.T, token string) {
+	t.Helper()
+	param := requestParam{
+		endpoint: userPath,
+		method:   http.MethodDelete,
+		token:    token,
+	}
+	sendRequest(t, context.Background(), param, http.StatusNoContent)
 }

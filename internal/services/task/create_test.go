@@ -32,10 +32,10 @@ func TestCreate(t *testing.T) {
 		t.Run(ts.name, func(t *testing.T) {
 			repoMock := mocks.NewMockrepoer(gomock.NewController(t))
 			if ts.err == nil {
-				repoMock.EXPECT().Create(gomock.Any(), ts.title, ts.description).Return(models.Task{}, nil)
+				repoMock.EXPECT().Create(gomock.Any(), ts.title, ts.description, gomock.Any()).Return(models.Task{}, nil)
 			}
 			s := New(repoMock)
-			_, err := s.Create(context.Background(), ts.title, ts.description)
+			_, err := s.Create(context.Background(), ts.title, ts.description, 0)
 			if err != ts.err {
 				t.Errorf("want: %v, got: %v", ts.err, err)
 			}

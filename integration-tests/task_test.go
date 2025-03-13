@@ -25,6 +25,8 @@ func parseTaskID(t *testing.T, resp []byte) string {
 
 func TestCreateAndDeleteTask(t *testing.T) {
 	ctx := context.Background()
+	token := createUserAndLogin(t)
+	defer userTearDown(t, token)
 	body := map[string]string{
 		"title":       "Homework",
 		"description": "Write assey",
@@ -36,6 +38,7 @@ func TestCreateAndDeleteTask(t *testing.T) {
 	}
 	param := requestParam{
 		endpoint: taskPath,
+		token:    token,
 		body:     bytes.NewReader(out),
 		method:   http.MethodPost,
 	}
@@ -44,6 +47,7 @@ func TestCreateAndDeleteTask(t *testing.T) {
 	id := parseTaskID(t, resp)
 	param = requestParam{
 		endpoint: taskPath + "?id=" + id,
+		token:    token,
 		method:   http.MethodDelete,
 	}
 	sendRequest(t, ctx, param, http.StatusNoContent)

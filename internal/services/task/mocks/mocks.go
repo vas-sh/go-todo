@@ -42,45 +42,45 @@ func (m *Mockrepoer) EXPECT() *MockrepoerMockRecorder {
 }
 
 // Create mocks base method.
-func (m *Mockrepoer) Create(ctx context.Context, title, description string) (models.Task, error) {
+func (m *Mockrepoer) Create(ctx context.Context, title, description string, userID int64) (models.Task, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, title, description)
+	ret := m.ctrl.Call(m, "Create", ctx, title, description, userID)
 	ret0, _ := ret[0].(models.Task)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockrepoerMockRecorder) Create(ctx, title, description any) *gomock.Call {
+func (mr *MockrepoerMockRecorder) Create(ctx, title, description, userID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*Mockrepoer)(nil).Create), ctx, title, description)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*Mockrepoer)(nil).Create), ctx, title, description, userID)
 }
 
 // List mocks base method.
-func (m *Mockrepoer) List(ctx context.Context) ([]models.Task, error) {
+func (m *Mockrepoer) List(ctx context.Context, userID int64) ([]models.Task, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "List", ctx)
+	ret := m.ctrl.Call(m, "List", ctx, userID)
 	ret0, _ := ret[0].([]models.Task)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // List indicates an expected call of List.
-func (mr *MockrepoerMockRecorder) List(ctx any) *gomock.Call {
+func (mr *MockrepoerMockRecorder) List(ctx, userID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*Mockrepoer)(nil).List), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*Mockrepoer)(nil).List), ctx, userID)
 }
 
 // Remove mocks base method.
-func (m *Mockrepoer) Remove(ctx context.Context, id int64) error {
+func (m *Mockrepoer) Remove(ctx context.Context, id, userID int64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Remove", ctx, id)
+	ret := m.ctrl.Call(m, "Remove", ctx, id, userID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Remove indicates an expected call of Remove.
-func (mr *MockrepoerMockRecorder) Remove(ctx, id any) *gomock.Call {
+func (mr *MockrepoerMockRecorder) Remove(ctx, id, userID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*Mockrepoer)(nil).Remove), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*Mockrepoer)(nil).Remove), ctx, id, userID)
 }

@@ -9,4 +9,5 @@ var (
 	ErrPasswordEmpty     = errors.New("'password' can't be empty")
 	ErrPasswordIncorrect = errors.New("'password' is invailid")
 	ErrInvalidToken      = errors.New("invalid token")
+	ErrInvalidUser       = errors.New("invalid user")
 )

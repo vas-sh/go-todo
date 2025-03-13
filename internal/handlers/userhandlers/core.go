@@ -25,7 +25,7 @@ func New(srv serviceer, secretJWT string) *handler {
 	}
 }
 
-func (h *handler) Register(anonRouter *gin.RouterGroup, authRouter *gin.RouterGroup) {
+func (h *handler) Register(anonRouter, authRouter *gin.RouterGroup) {
 	usersAnonRouter := anonRouter.Group("users")
 	usersAnonRouter.POST("/sign-up", h.signUp)
 	usersAnonRouter.OPTIONS("", func(_ *gin.Context) {})
