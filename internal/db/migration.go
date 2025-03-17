@@ -16,5 +16,5 @@ func Migrate(db *gorm.DB) error {
 	if err != nil {
 		return err
 	}
-	return db.AutoMigrate(models.User{}, models.Task{})
+	return db.AutoMigrate(models.User{}, models.Task{}, models.UserActivation{})
 }

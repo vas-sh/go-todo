@@ -64,7 +64,7 @@ func TestPrepareUser(t *testing.T) {
 	}
 	for _, ts := range testCases {
 		t.Run(ts.name, func(t *testing.T) {
-			s := New(nil)
+			s := New(nil, nil)
 			got, err := s.prepareUser(ts.body)
 			if err != ts.err {
 				t.Errorf("want: %v, got: %v", ts.err, err)

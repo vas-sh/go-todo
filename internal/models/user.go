@@ -1,5 +1,11 @@
 package models
 
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
 const UserContextKey = "user"
 
 type User struct {
@@ -19,4 +25,12 @@ type CreateUserBody struct {
 type LoginBody struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
+}
+
+type UserActivation struct {
+	ID        uuid.UUID `gorm:"primary_key"`
+	UserID    int64
+	User      User
+	Date      time.Time
+	Activated bool
 }

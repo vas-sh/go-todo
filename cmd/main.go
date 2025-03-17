@@ -9,6 +9,7 @@ import (
 	"github.com/vas-sh/todo/internal/handlers"
 	"github.com/vas-sh/todo/internal/handlers/taskhandlers"
 	"github.com/vas-sh/todo/internal/handlers/userhandlers"
+	"github.com/vas-sh/todo/internal/mail"
 	"github.com/vas-sh/todo/internal/repo/taskrepo"
 	"github.com/vas-sh/todo/internal/repo/userrepo"
 	"github.com/vas-sh/todo/internal/services/jwttoken"
@@ -17,6 +18,8 @@ import (
 )
 
 func main() {
+	cfg := config.Config
+	mailSrv := mail.New(cfg.MailLogin, cfg.MailPassword, cfg.MailHost, cfg.MailPort)
 	dns := "host=localhost user=todouser password=2222 dbname=tododb port=5432 sslmode=disable TimeZone=Europe/Kiev"
 	databace, err := db.New(dns)
 	if err != nil {
@@ -31,14 +34,14 @@ func main() {
 	taskSrv := task.New(taskRepo)
 
 	userRepo := userrepo.New(databace)
-	userSrv := user.New(userRepo)
+	userSrv := user.New(userRepo, mailSrv)
 
-	userFetcher := jwttoken.New(config.Config.SecretJWT)
+	userFetcher := jwttoken.New(cfg.SecretJWT)
 	server := handlers.New(userFetcher)
 	anonRouter := server.AnonRouter()
 	authRouter := server.AuthRouter()
 	taskhandlers.New(taskSrv).Register(authRouter)
-	userhandlers.New(userSrv, config.Config.SecretJWT).Register(anonRouter, authRouter)
+	userhandlers.New(userSrv, cfg.SecretJWT).Register(anonRouter, authRouter)
 
 	err = server.Run()
 	if err != nil {

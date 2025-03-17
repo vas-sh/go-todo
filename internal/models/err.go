@@ -10,4 +10,5 @@ var (
 	ErrPasswordIncorrect = errors.New("'password' is invailid")
 	ErrInvalidToken      = errors.New("invalid token")
 	ErrInvalidUser       = errors.New("invalid user")
+	ErrAlreadyExist      = errors.New("already exist")
 )
