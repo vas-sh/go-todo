@@ -20,15 +20,24 @@ import (
 func main() {
 	cfg := config.Config
 	mailSrv := mail.New(cfg.MailLogin, cfg.MailPassword, cfg.MailHost, cfg.MailPort)
-	dns := "host=localhost user=todouser password=2222 dbname=tododb port=5432 sslmode=disable TimeZone=Europe/Kiev"
-	databace, err := db.New(dns)
+	databace, err := db.New(cfg.DB)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
+	sqlDB, err := databace.DB()
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		err := sqlDB.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 	databace = databace.Debug()
 	err = db.Migrate(databace)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	taskRepo := taskrepo.New(databace)
 	taskSrv := task.New(taskRepo)
@@ -45,6 +54,6 @@ func main() {
 
 	err = server.Run()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 }

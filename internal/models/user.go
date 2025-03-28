@@ -28,9 +28,9 @@ type LoginBody struct {
 }
 
 type UserActivation struct {
-	ID        uuid.UUID `gorm:"primary_key"`
+	ID        uuid.UUID `gorm:"type:uuid;primary_key"`
 	UserID    int64
-	User      User
+	User      User `gorm:"constraint:OnDelete:CASCADE;"`
 	Date      time.Time
 	Activated bool
 }

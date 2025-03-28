@@ -25,7 +25,7 @@ func parseTaskID(t *testing.T, resp []byte) string {
 
 func TestCreateAndDeleteTask(t *testing.T) {
 	ctx := context.Background()
-	token := createUserAndLogin(t)
+	token := signUpAndLogin(t)
 	defer userTearDown(t, token)
 	body := map[string]string{
 		"title":       "Homework",

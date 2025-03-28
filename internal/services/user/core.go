@@ -16,6 +16,8 @@ type repoer interface {
 	Remove(ctx context.Context, id int64) error
 	GetByEmail(ctx context.Context, email string) (user models.User, err error)
 	CreateActivation(ctx context.Context, userID int64) (uuid.UUID, error)
+	Activation(ctx context.Context, id uuid.UUID) (*models.UserActivation, error)
+	Activate(ctx context.Context, userActivation *models.UserActivation) error
 }
 
 type srv struct {

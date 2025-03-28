@@ -11,4 +11,6 @@ var (
 	ErrInvalidToken      = errors.New("invalid token")
 	ErrInvalidUser       = errors.New("invalid user")
 	ErrAlreadyExist      = errors.New("already exist")
+	ErrAlreadyActivated  = errors.New("user already activated")
+	ErrAlreadyExpired    = errors.New("already expired")
 )

@@ -22,6 +22,10 @@ func (h *handler) login(c *gin.Context) {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
+	if !user.Activated {
+		http.Error(c.Writer, "not activated", http.StatusForbidden)
+		return
+	}
 	now := time.Now()
 	out, err := json.Marshal(user)
 	if err != nil {

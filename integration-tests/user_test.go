@@ -8,6 +8,9 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/uuid"
+	"github.com/vas-sh/todo/internal/config"
+	"github.com/vas-sh/todo/internal/db"
 	"github.com/vas-sh/todo/internal/models"
 )
 
@@ -24,7 +27,7 @@ func parseUser(t *testing.T, resp []byte) models.User {
 }
 
 func TestSignUp(t *testing.T) {
-	token := createUserAndLogin(t)
+	token := signUpAndLogin(t)
 	userTearDown(t, token)
 }
 
@@ -59,7 +62,7 @@ func login(t *testing.T, body models.LoginBody) string {
 	return jwtToken.Type + " " + jwtToken.Token
 }
 
-func createUserAndLogin(t *testing.T) string {
+func signUpAndLogin(t *testing.T) string {
 	t.Helper()
 	ctx := context.Background()
 	body := models.CreateUserBody{
@@ -87,12 +90,47 @@ func createUserAndLogin(t *testing.T) string {
 	if user != want {
 		t.Error(cmp.Diff(user, want))
 	}
-
+	activateUser(ctx, t, user.ID)
 	token := login(t, models.LoginBody{
 		Username: body.Email,
 		Password: body.Password,
 	})
 	return token
+}
+
+func getActivationID(t *testing.T, userID int64) (uuid.UUID, error) {
+	t.Helper()
+	databace, err := db.New(config.Config.DB)
+	if err != nil {
+		return uuid.Nil, err
+	}
+	sqlDB, err := databace.DB()
+	if err != nil {
+		return uuid.Nil, err
+	}
+	defer sqlDB.Close()
+	var activation models.UserActivation
+	err = databace.Where("user_id = ? AND date >= now() - interval '1 hour' AND activated = false", userID).
+		Order("date DESC").
+		First(&activation).Error
+	if err != nil {
+		return uuid.Nil, err
+	}
+	return activation.ID, nil
+}
+
+func activateUser(ctx context.Context, t *testing.T, userID int64) {
+	t.Helper()
+	id, err := getActivationID(t, userID)
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
+	param := requestParam{
+		endpoint: userPath + "/confirm/" + id.String(),
+		method:   http.MethodGet,
+	}
+	sendRequest(t, ctx, param, http.StatusOK)
 }
 
 func userTearDown(t *testing.T, token string) {
