@@ -8,13 +8,13 @@ import (
 )
 
 type taskBody struct {
-	Title       string `json:"title" form:"title"`
-	Description string `json:"description" form:"description"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
 }
 
 func (h *handler) create(c *gin.Context) {
 	var body taskBody
-	err := c.Bind(&body)
+	err := c.ShouldBindJSON(&body)
 	if err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
