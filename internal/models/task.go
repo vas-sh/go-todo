@@ -15,5 +15,5 @@ type Task struct {
 	Description string `json:"description"`
 	Status      Status `json:"status" gorm:"type:task_status"`
 	UserID      int64  `json:"-"`
-	User        User
+	User        User   `gorm:"constraint:OnDelete:CASCADE;"`
 }

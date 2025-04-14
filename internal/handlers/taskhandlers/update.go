@@ -5,20 +5,28 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/vas-sh/todo/internal/models"
 	"github.com/vas-sh/todo/internal/userhelper"
 )
 
-func (h *handler) remove(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+func (h *handler) update(c *gin.Context) {
+	var body models.Task
+	err := c.ShouldBindJSON(&body)
+	if err != nil {
+		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+	taskID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 	user := userhelper.MustFromContext(c)
-	err = h.srv.Remove(c.Request.Context(), int64(id), user.ID)
+	userID := user.ID
+
+	err = h.srv.Update(c, body, userID, int64(taskID))
 	if err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	c.JSON(http.StatusNoContent, nil)
 }
