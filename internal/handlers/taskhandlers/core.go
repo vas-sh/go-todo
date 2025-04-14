@@ -30,5 +30,6 @@ func (h *handler) Register(router *gin.RouterGroup) {
 	tasksRouter.POST("", h.create)
 	tasksRouter.DELETE("/:id", h.remove)
 	tasksRouter.OPTIONS("", func(_ *gin.Context) {})
+	tasksRouter.OPTIONS("/:id", func(_ *gin.Context) {})
 	tasksRouter.PUT("/:id", h.update)
 }
