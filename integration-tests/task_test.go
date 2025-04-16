@@ -7,11 +7,15 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/vas-sh/todo/internal/models"
 )
 
 const taskPath = "tasks"
+
+var estimateTime = time.Date(2025, time.April, 16, 16, 53, 16, 194164000, time.UTC)
 
 func parseTaskID(t *testing.T, resp []byte) string {
 	t.Helper()
@@ -59,9 +63,10 @@ func updateTask(ctx context.Context, t *testing.T, token, id string) {
 func createTask(ctx context.Context, t *testing.T, token string) []byte {
 	t.Helper()
 	body := map[string]any{
-		"title":       "Homework",
-		"description": "Write assey",
-		"status":      models.NewStatus,
+		"title":        "Homework",
+		"description":  "Write assey",
+		"status":       models.NewStatus,
+		"estimateTime": estimateTime,
 	}
 	out, err := json.Marshal(body)
 	if err != nil {
@@ -111,13 +116,14 @@ func TestUpdateTask(t *testing.T) {
 			continue
 		}
 		want := models.Task{
-			ID:          tasks[i].ID,
-			Title:       "Homework 1",
-			Description: "Write assey 1",
-			Status:      models.DoneStatus,
+			ID:           tasks[i].ID,
+			Title:        "Homework 1",
+			Description:  "Write assey 1",
+			Status:       models.DoneStatus,
+			EstimateTime: &estimateTime,
 		}
-		if want != tasks[i] {
-			t.Errorf("want: %#v, got: %#v", want, tasks[i])
+		if diff := cmp.Diff(want, tasks[i]); diff != "" {
+			t.Error(diff)
 		}
 		return
 	}
