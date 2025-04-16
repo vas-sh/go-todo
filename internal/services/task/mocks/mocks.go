@@ -42,18 +42,17 @@ func (m *Mockrepoer) EXPECT() *MockrepoerMockRecorder {
 }
 
 // Create mocks base method.
-func (m *Mockrepoer) Create(ctx context.Context, title, description string, userID int64) (models.Task, error) {
+func (m *Mockrepoer) Create(ctx context.Context, res *models.Task) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, title, description, userID)
-	ret0, _ := ret[0].(models.Task)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "Create", ctx, res)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockrepoerMockRecorder) Create(ctx, title, description, userID any) *gomock.Call {
+func (mr *MockrepoerMockRecorder) Create(ctx, res any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*Mockrepoer)(nil).Create), ctx, title, description, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*Mockrepoer)(nil).Create), ctx, res)
 }
 
 // List mocks base method.

@@ -11,20 +11,25 @@ import (
 
 func TestCreate(t *testing.T) {
 	testCases := []struct {
-		name        string
-		title       string
-		description string
-		err         error
+		name  string
+		input models.Task
+		err   error
 	}{
 		{
-			name:        "ok",
-			title:       "Homework",
-			description: "need to finish math",
+			name: "ok",
+			input: models.Task{
+				Title:       "Homework",
+				Description: "need to finish math",
+				Status:      models.NewStatus,
+			},
 		},
 		{
-			name:        "empty title",
-			description: "need to finish math",
-			err:         models.ErrValueEmpty,
+			name: "empty title",
+			input: models.Task{
+				Description: "need to finish math",
+				Status:      models.NewStatus,
+			},
+			err: models.ErrValueEmpty,
 		},
 	}
 
@@ -32,10 +37,10 @@ func TestCreate(t *testing.T) {
 		t.Run(ts.name, func(t *testing.T) {
 			repoMock := mocks.NewMockrepoer(gomock.NewController(t))
 			if ts.err == nil {
-				repoMock.EXPECT().Create(gomock.Any(), ts.title, ts.description, gomock.Any()).Return(models.Task{}, nil)
+				repoMock.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil)
 			}
 			s := New(repoMock)
-			_, err := s.Create(context.Background(), ts.title, ts.description, 0)
+			_, err := s.Create(context.Background(), ts.input)
 			if err != ts.err {
 				t.Errorf("want: %v, got: %v", ts.err, err)
 			}

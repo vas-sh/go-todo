@@ -58,9 +58,10 @@ func updateTask(ctx context.Context, t *testing.T, token, id string) {
 
 func createTask(ctx context.Context, t *testing.T, token string) []byte {
 	t.Helper()
-	body := map[string]string{
+	body := map[string]any{
 		"title":       "Homework",
 		"description": "Write assey",
+		"status":      models.NewStatus,
 	}
 	out, err := json.Marshal(body)
 	if err != nil {

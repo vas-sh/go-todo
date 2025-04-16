@@ -8,10 +8,10 @@ import (
 )
 
 type serviceer interface {
-	Create(ctx context.Context, title, description string, userID int64) (models.Task, error)
+	Create(ctx context.Context, body models.Task) (models.Task, error)
 	Remove(ctx context.Context, id, userID int64) error
 	List(ctx context.Context, userID int64) ([]models.Task, error)
-	Update(ctx context.Context, body models.Task, userID int64, taskID int64) error
+	Update(ctx context.Context, body models.Task, userID, taskID int64) error
 }
 
 type handler struct {

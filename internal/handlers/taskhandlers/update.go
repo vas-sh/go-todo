@@ -29,4 +29,5 @@ func (h *handler) update(c *gin.Context) {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
+	c.JSON(http.StatusOK, nil)
 }
