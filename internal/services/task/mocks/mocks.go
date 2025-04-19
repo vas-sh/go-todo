@@ -84,6 +84,21 @@ func (mr *MockrepoerMockRecorder) Remove(ctx, id, userID any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*Mockrepoer)(nil).Remove), ctx, id, userID)
 }
 
+// Statuses mocks base method.
+func (m *Mockrepoer) Statuses(ctx context.Context, userID, taskID int64) ([]models.TaskStatus, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Statuses", ctx, userID, taskID)
+	ret0, _ := ret[0].([]models.TaskStatus)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Statuses indicates an expected call of Statuses.
+func (mr *MockrepoerMockRecorder) Statuses(ctx, userID, taskID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Statuses", reflect.TypeOf((*Mockrepoer)(nil).Statuses), ctx, userID, taskID)
+}
+
 // Update mocks base method.
 func (m *Mockrepoer) Update(ctx context.Context, body models.Task, userID, taskID int64) error {
 	m.ctrl.T.Helper()

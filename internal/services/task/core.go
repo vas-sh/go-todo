@@ -13,6 +13,7 @@ type repoer interface {
 	Remove(ctx context.Context, id, userID int64) error
 	List(ctx context.Context, userID int64) ([]models.Task, error)
 	Update(ctx context.Context, body models.Task, userID, taskID int64) error
+	Statuses(ctx context.Context, userID, taskID int64) ([]models.TaskStatus, error)
 }
 
 type srv struct {
