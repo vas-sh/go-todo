@@ -41,3 +41,35 @@ func TestStatusChange(t *testing.T) {
 		t.Errorf("want 'done' status, got %q", statuses[1].Status)
 	}
 }
+
+func TestReportStatuses(t *testing.T) {
+	ctx := context.Background()
+	token := signUpAndLogin(t)
+	defer userTearDown(t, token)
+
+	for range 2 {
+		resp := createTask(ctx, t, token)
+		defer deleteTask(ctx, t, token, resp)
+	}
+	param := requestParam{
+		endpoint: taskPath + "/report-statuses",
+		token:    token,
+		method:   http.MethodGet,
+	}
+	resp := sendRequest(t, ctx, param, http.StatusOK)
+	var statuses []models.CoutStatus
+	err := json.Unmarshal(resp, &statuses)
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if len(statuses) != 1 {
+		t.Errorf("want 1 status, got %d", len(statuses))
+		return
+	}
+	if statuses[0].Count != 2 {
+		t.Errorf("want: 2, got: %d", statuses[0].Count)
+	}
+	if statuses[0].Status != models.NewStatus {
+		t.Errorf("want: %q, got: %q", statuses[0].Status, models.NewStatus)
+	}
+}

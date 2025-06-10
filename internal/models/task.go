@@ -11,6 +11,11 @@ const (
 	CanceledStatus   Status = "canceled"
 )
 
+type CoutStatus struct {
+	Status Status `json:"status"`
+	Count  int64  `json:"count"`
+}
+
 type Task struct {
 	ID           int64      `json:"id" gorm:"primary_key"`
 	Title        string     `json:"title"`

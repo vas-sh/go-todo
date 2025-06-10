@@ -13,6 +13,7 @@ type serviceer interface {
 	List(ctx context.Context, userID int64) ([]models.Task, error)
 	Update(ctx context.Context, body models.Task, userID, taskID int64) error
 	Statuses(ctx context.Context, userID, taskID int64) ([]models.TaskStatus, error)
+	ReportStatuses(ctx context.Context, userID int64) ([]models.CoutStatus, error)
 }
 
 type handler struct {
@@ -32,7 +33,8 @@ func (h *handler) Register(router *gin.RouterGroup) {
 	tasksRouter.DELETE("/:id", h.remove)
 	tasksRouter.OPTIONS("", func(_ *gin.Context) {})
 	tasksRouter.OPTIONS("/:id", func(_ *gin.Context) {})
-	tasksRouter.OPTIONS("/:id/statuses", func(ctx *gin.Context) {})
+	tasksRouter.OPTIONS("/:id/statuses", func(_ *gin.Context) {})
 	tasksRouter.PUT("/:id", h.update)
 	tasksRouter.GET("/:id/statuses", h.statuses)
+	tasksRouter.GET("/report-statuses", h.reportStatuses)
 }

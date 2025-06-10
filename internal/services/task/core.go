@@ -14,6 +14,7 @@ type repoer interface {
 	List(ctx context.Context, userID int64) ([]models.Task, error)
 	Update(ctx context.Context, body models.Task, userID, taskID int64) error
 	Statuses(ctx context.Context, userID, taskID int64) ([]models.TaskStatus, error)
+	ReportStatuses(ctx context.Context, userID int64) ([]models.CoutStatus, error)
 }
 
 type srv struct {

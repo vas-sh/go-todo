@@ -44,8 +44,9 @@ func (h *handler) login(c *gin.Context) {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	c.JSON(http.StatusOK, map[string]string{
+	c.JSON(http.StatusOK, map[string]any{
 		"token": tokenStr,
 		"type":  "JWT",
+		"user":  user,
 	})
 }

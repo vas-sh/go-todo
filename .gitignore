@@ -2,3 +2,4 @@
 *.html
 *.out
 secret.sh
+report_statuses.sh
