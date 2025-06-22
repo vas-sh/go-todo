@@ -11,7 +11,14 @@ const (
 	CanceledStatus   Status = "canceled"
 )
 
-type CoutStatus struct {
+type CountCompletion struct {
+	InTime        int64 `json:"in_time"`
+	NotInTime     int64 `json:"not_in_time"`
+	ActiveOverdue int64 `json:"active_overdue"`
+	DeadLineSoon  int64 `json:"dead_line_soon"`
+}
+
+type CountStatus struct {
 	Status Status `json:"status"`
 	Count  int64  `json:"count"`
 }

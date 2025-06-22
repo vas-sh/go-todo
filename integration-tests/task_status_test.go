@@ -57,7 +57,7 @@ func TestReportStatuses(t *testing.T) {
 		method:   http.MethodGet,
 	}
 	resp := sendRequest(t, ctx, param, http.StatusOK)
-	var statuses []models.CoutStatus
+	var statuses []models.CountStatus
 	err := json.Unmarshal(resp, &statuses)
 	if err != nil {
 		t.Error(err.Error())

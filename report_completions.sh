@@ -1,0 +1,2 @@
+curl -X GET -H 'content-type:application/json' http://localhost:8080/api/tasks/report-completions \
+    -H 'authorization:JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTI0MjA0OTYsImhiZiI6MTc0OTgyODQ5NiwiaWF0IjoxNzQ5ODI4NDk2LCJ1c2VyIjoie1wiaWRcIjozMjcsXCJuYW1lXCI6XCJ2YXNcIixcImVtYWlsXCI6XCJ2YXMuc2hvcHVrQGdtYWlsLmNvbVwiLFwiYWN0aXZhdGVkXCI6dHJ1ZX0ifQ.H-aXx1xX0M4-jUYGFxqkfsfUM9n6A5XJr85P6kUNdCI' | json_pp

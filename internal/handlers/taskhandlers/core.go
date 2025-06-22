@@ -13,7 +13,8 @@ type serviceer interface {
 	List(ctx context.Context, userID int64) ([]models.Task, error)
 	Update(ctx context.Context, body models.Task, userID, taskID int64) error
 	Statuses(ctx context.Context, userID, taskID int64) ([]models.TaskStatus, error)
-	ReportStatuses(ctx context.Context, userID int64) ([]models.CoutStatus, error)
+	ReportStatuses(ctx context.Context, userID int64) ([]models.CountStatus, error)
+	ReportCompletions(ctx context.Context, userID int64) (models.CountCompletion, error)
 }
 
 type handler struct {
@@ -37,4 +38,5 @@ func (h *handler) Register(router *gin.RouterGroup) {
 	tasksRouter.PUT("/:id", h.update)
 	tasksRouter.GET("/:id/statuses", h.statuses)
 	tasksRouter.GET("/report-statuses", h.reportStatuses)
+	tasksRouter.GET("/report-completions", h.reportCompletions)
 }
