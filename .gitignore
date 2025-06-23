@@ -3,3 +3,4 @@
 *.out
 secret.sh
 report_statuses.sh
+report_completions.sh
