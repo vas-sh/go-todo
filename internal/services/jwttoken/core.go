@@ -2,6 +2,7 @@ package jwttoken
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/vas-sh/todo/internal/models"
@@ -47,4 +48,21 @@ func (s *srv) GetUser(auth string) (*models.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (s *srv) CreateJWT(user models.User) (string, error) {
+	now := time.Now()
+	out, err := json.Marshal(user)
+	if err != nil {
+		return "", err
+	}
+	claims := jwt.MapClaims{
+		models.UserContextKey: string(out),
+		"iat":                 now.Unix(),
+		"hbf":                 now.Unix(),
+		"exp":                 now.Add(time.Hour * 24 * 30).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenStr, err := token.SignedString([]byte(s.secretJWT))
+	return tokenStr, err
 }

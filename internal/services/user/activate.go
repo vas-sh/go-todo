@@ -8,16 +8,17 @@ import (
 	"github.com/vas-sh/todo/internal/models"
 )
 
-func (s *srv) Activate(ctx context.Context, id uuid.UUID) error {
+func (s *srv) Activate(ctx context.Context, id uuid.UUID) (models.User, error) {
 	userActivation, err := s.repo.Activation(ctx, id)
 	if err != nil {
-		return err
+		return models.User{}, err
 	}
 	if time.Since(userActivation.Date).Hours() > 2 {
-		return models.ErrAlreadyExpired
+		return models.User{}, models.ErrAlreadyExpired
 	}
 	if userActivation.Activated {
-		return models.ErrAlreadyActivated
+		return models.User{}, models.ErrAlreadyActivated
 	}
-	return s.repo.Activate(ctx, userActivation)
+	user := userActivation.User
+	return user, s.repo.Activate(ctx, userActivation)
 }

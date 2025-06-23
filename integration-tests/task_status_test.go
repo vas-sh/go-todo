@@ -73,3 +73,31 @@ func TestReportStatuses(t *testing.T) {
 		t.Errorf("want: %q, got: %q", statuses[0].Status, models.NewStatus)
 	}
 }
+
+func TestReportCompletion(t *testing.T) {
+	ctx := context.Background()
+	token := signUpAndLogin(t)
+	defer userTearDown(t, token)
+
+	for range 2 {
+		resp := createTask(ctx, t, token)
+		defer deleteTask(ctx, t, token, resp)
+	}
+	param := requestParam{
+		endpoint: taskPath + "/report-completions",
+		token:    token,
+		method:   http.MethodGet,
+	}
+	resp := sendRequest(t, ctx, param, http.StatusOK)
+	var got models.CountCompletion
+	err := json.Unmarshal(resp, &got)
+	if err != nil {
+		t.Error(err.Error())
+	}
+	want := models.CountCompletion{
+		ActiveOverdue: 2,
+	}
+	if got != want {
+		t.Errorf("want: %#v, got: %#v", want, got)
+	}
+}

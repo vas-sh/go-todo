@@ -33,7 +33,7 @@ func (r *repo) CreateActivation(ctx context.Context, userID int64) (uuid.UUID, e
 
 func (r *repo) Activation(ctx context.Context, id uuid.UUID) (*models.UserActivation, error) {
 	var res models.UserActivation
-	err := r.db.WithContext(ctx).First(&res, id).Error
+	err := r.db.WithContext(ctx).Preload("User").First(&res, id).Error
 	if err != nil {
 		return nil, err
 	}

@@ -12,18 +12,24 @@ type serviceer interface {
 	SignUp(ctx context.Context, body models.CreateUserBody) (*models.User, error)
 	Remove(ctx context.Context, id int64) error
 	Login(ctx context.Context, email, password string) (models.User, error)
-	Activate(ctx context.Context, id uuid.UUID) error
+	Activate(ctx context.Context, id uuid.UUID) (models.User, error)
+}
+
+type userFetcher interface {
+	CreateJWT(user models.User) (string, error)
 }
 
 type handler struct {
-	srv       serviceer
-	secretJWT string
+	srv         serviceer
+	secretJWT   string
+	userFetcher userFetcher
 }
 
-func New(srv serviceer, secretJWT string) *handler {
+func New(srv serviceer, secretJWT string, userFetcher userFetcher) *handler {
 	return &handler{
-		srv:       srv,
-		secretJWT: secretJWT,
+		srv:         srv,
+		secretJWT:   secretJWT,
+		userFetcher: userFetcher,
 	}
 }
 

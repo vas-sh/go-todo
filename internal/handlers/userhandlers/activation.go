@@ -14,10 +14,10 @@ func (h *handler) activation(c *gin.Context) {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = h.srv.Activate(c, id)
+	user, err := h.srv.Activate(c, id)
 	if err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	c.JSON(http.StatusOK, nil)
+	h.returnJWTToken(c, user)
 }
