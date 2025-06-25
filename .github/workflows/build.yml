@@ -1,0 +1,24 @@
+name: Run unit tests and linter
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-go@v5
+      with:
+        go-version: 1.22
+
+    - run: go mod download
+
+    - name: Run linter
+      run: make lint
+
+    - name: Run unit tests
+      run: make unit-test
