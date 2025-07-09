@@ -19,14 +19,14 @@ func (s *srv) ping(ctx context.Context, uConn userConn, userID int64) {
 		return nil
 	})
 	for {
-		err := uConn.conn.SetWriteDeadline(time.Now().Add(s.pingTimeout / 2))
-		if err != nil {
-			log.Println(err)
-			return
-		}
 		select {
 		case <-time.After(s.pingTimeout / 2):
 		case <-ctx.Done():
+			return
+		}
+		err := uConn.conn.SetWriteDeadline(time.Now().Add(s.pingTimeout / 2))
+		if err != nil {
+			log.Println(err)
 			return
 		}
 		select {
