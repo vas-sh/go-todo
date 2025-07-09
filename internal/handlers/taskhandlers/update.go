@@ -29,5 +29,6 @@ func (h *handler) update(c *gin.Context) {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
+	go h.event.UpdateTask(userID)
 	c.JSON(http.StatusOK, nil)
 }

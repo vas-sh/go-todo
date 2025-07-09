@@ -23,7 +23,7 @@ func (s *srv) SignUp(ctx context.Context, body models.CreateUserBody) (*models.U
 	err = s.mail.Send(
 		body.Email,
 		"Please confirm your email",
-		"Click here http://localhost:8100/confirm/"+activationID.String(),
+		"http://localhost:8100/confirm/"+activationID.String(),
 	)
 	if err != nil {
 		return nil, err

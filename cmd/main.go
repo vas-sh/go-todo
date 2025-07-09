@@ -9,6 +9,7 @@ import (
 	"github.com/vas-sh/todo/internal/handlers"
 	"github.com/vas-sh/todo/internal/handlers/taskhandlers"
 	"github.com/vas-sh/todo/internal/handlers/userhandlers"
+	"github.com/vas-sh/todo/internal/handlers/wshandlers"
 	"github.com/vas-sh/todo/internal/mail"
 	"github.com/vas-sh/todo/internal/repo/taskrepo"
 	"github.com/vas-sh/todo/internal/repo/userrepo"
@@ -19,7 +20,10 @@ import (
 
 func main() {
 	cfg := config.Config
-	mailSrv := mail.New(cfg.MailLogin, cfg.MailPassword, cfg.MailHost, cfg.MailPort)
+	mailSrv, err := mail.New(cfg.MailLogin, cfg.MailPassword, cfg.MailHost, cfg.MailPort)
+	if err != nil {
+		panic(err)
+	}
 	databace, err := db.New(cfg.DB)
 	if err != nil {
 		panic(err)
@@ -49,7 +53,9 @@ func main() {
 	server := handlers.New(userFetcher)
 	anonRouter := server.AnonRouter()
 	authRouter := server.AuthRouter()
-	taskhandlers.New(taskSrv).Register(authRouter)
+	wsSrv := wshandlers.New(userFetcher)
+	wsSrv.Register(anonRouter)
+	taskhandlers.New(taskSrv, wsSrv).Register(authRouter)
 	userhandlers.New(userSrv, cfg.SecretJWT, userFetcher).Register(anonRouter, authRouter)
 
 	err = server.Run()

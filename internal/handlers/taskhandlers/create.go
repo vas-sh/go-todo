@@ -22,5 +22,6 @@ func (h *handler) create(c *gin.Context) {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
+	go h.event.CreateTask(user.ID)
 	c.JSON(http.StatusOK, task)
 }

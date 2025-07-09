@@ -17,13 +17,20 @@ type serviceer interface {
 	ReportCompletions(ctx context.Context, userID int64) (models.CountCompletion, error)
 }
 
-type handler struct {
-	srv serviceer
+type eventer interface {
+	CreateTask(userID int64)
+	UpdateTask(userID int64)
 }
 
-func New(srv serviceer) *handler {
+type handler struct {
+	srv   serviceer
+	event eventer
+}
+
+func New(srv serviceer, event eventer) *handler {
 	return &handler{
-		srv: srv,
+		srv:   srv,
+		event: event,
 	}
 }
 

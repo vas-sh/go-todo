@@ -11,6 +11,13 @@ const (
 	CanceledStatus   Status = "canceled"
 )
 
+type EventType string
+
+const (
+	CreatedTaskEventType EventType = "createdTask"
+	UpdatedTaskEventType EventType = "updatedTask"
+)
+
 type CountCompletion struct {
 	InTime        int64 `json:"in_time"`
 	NotInTime     int64 `json:"not_in_time"`
