@@ -17,6 +17,7 @@ func (s *srv) CreateTask(userID int64) {
 	s.sendEvent(models.CreatedTaskEventType, userID)
 }
 
+//nolint:revive //it's fixed in go 1.22
 func (s *srv) sendEvent(eventType models.EventType, userID int64) {
 	s.RLock()
 	defer s.RUnlock()
