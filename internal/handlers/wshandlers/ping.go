@@ -24,11 +24,6 @@ func (s *srv) ping(ctx context.Context, uConn userConn, userID int64) {
 		case <-ctx.Done():
 			return
 		}
-		err := uConn.conn.SetWriteDeadline(time.Now().Add(s.pingTimeout / 2))
-		if err != nil {
-			log.Println(err)
-			return
-		}
 		select {
 		case uConn.ch <- message{
 			msgType: websocket.PingMessage,
