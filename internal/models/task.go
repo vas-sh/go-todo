@@ -16,6 +16,7 @@ type EventType string
 const (
 	CreatedTaskEventType EventType = "createdTask"
 	UpdatedTaskEventType EventType = "updatedTask"
+	DeletedTaskEventType EventType = "deletedTask"
 )
 
 type CountCompletion struct {
@@ -26,8 +27,10 @@ type CountCompletion struct {
 }
 
 type CountStatus struct {
-	Status Status `json:"status"`
-	Count  int64  `json:"count"`
+	NewStatus  int64 `json:"new_status"`
+	InProgress int64 `json:"in_progress"`
+	Done       int64 `json:"done"`
+	Canceled   int64 `json:"canceled"`
 }
 
 type Task struct {

@@ -57,20 +57,16 @@ func TestReportStatuses(t *testing.T) {
 		method:   http.MethodGet,
 	}
 	resp := sendRequest(t, ctx, param, http.StatusOK)
-	var statuses []models.CountStatus
-	err := json.Unmarshal(resp, &statuses)
+	var got models.CountStatus
+	err := json.Unmarshal(resp, &got)
 	if err != nil {
 		t.Error(err.Error())
 	}
-	if len(statuses) != 1 {
-		t.Errorf("want 1 status, got %d", len(statuses))
-		return
+	want := models.CountStatus{
+		NewStatus: 2,
 	}
-	if statuses[0].Count != 2 {
-		t.Errorf("want: 2, got: %d", statuses[0].Count)
-	}
-	if statuses[0].Status != models.NewStatus {
-		t.Errorf("want: %q, got: %q", statuses[0].Status, models.NewStatus)
+	if got != want {
+		t.Errorf("want: %#v, got: %#v", want, got)
 	}
 }
 

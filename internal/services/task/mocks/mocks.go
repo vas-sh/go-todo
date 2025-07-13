@@ -100,10 +100,10 @@ func (mr *MockrepoerMockRecorder) ReportCompletions(ctx, userID any) *gomock.Cal
 }
 
 // ReportStatuses mocks base method.
-func (m *Mockrepoer) ReportStatuses(ctx context.Context, userID int64) ([]models.CountStatus, error) {
+func (m *Mockrepoer) ReportStatuses(ctx context.Context, userID int64) (models.CountStatus, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ReportStatuses", ctx, userID)
-	ret0, _ := ret[0].([]models.CountStatus)
+	ret0, _ := ret[0].(models.CountStatus)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

@@ -6,16 +6,21 @@ import (
 	"github.com/vas-sh/todo/internal/models"
 )
 
-func (r *repo) ReportStatuses(ctx context.Context, userID int64) ([]models.CountStatus, error) {
-	var statuses []models.CountStatus
-	err := r.db.WithContext(ctx).
-		Model(models.Task{}).
-		Select("status, COUNT(1) as count").
-		Where("user_id = ?", userID).
-		Group("status").
-		Find(&statuses).Error
-	if err != nil {
-		return nil, err
-	}
-	return statuses, nil
+func (r *repo) ReportStatuses(ctx context.Context, userID int64) (models.CountStatus, error) {
+	var statuses models.CountStatus
+	q := `
+		WITH statuses AS (
+			SELECT t.status
+			FROM tasks AS t
+			WHERE t.user_id = ?
+		)
+
+		SELECT SUM(CASE WHEN s.status = 'new' THEN 1 END) AS new_status,
+			   SUM(CASE WHEN s.status = 'inProgress' THEN 1 END) AS in_progress,
+			   SUM(CASE WHEN s.status = 'done' THEN 1 END) AS done,
+			   SUM(CASE WHEN s.status = 'canceled' THEN 1 END) AS canceled
+		FROM statuses AS s
+	`
+	err := r.db.WithContext(ctx).Raw(q, userID).First(&statuses).Error
+	return statuses, err
 }

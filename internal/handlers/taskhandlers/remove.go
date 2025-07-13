@@ -20,5 +20,6 @@ func (h *handler) remove(c *gin.Context) {
 		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
 		return
 	}
+	go h.event.DeleteTask(user.ID)
 	c.JSON(http.StatusNoContent, nil)
 }
