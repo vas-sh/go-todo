@@ -2,8 +2,12 @@ package main
 
 import (
 	"log"
+	"log/slog"
+	"os"
 
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	_ "github.com/lib/pq"
+	"github.com/vas-sh/todo/internal/bot"
 	"github.com/vas-sh/todo/internal/config"
 	"github.com/vas-sh/todo/internal/db"
 	"github.com/vas-sh/todo/internal/handlers"
@@ -43,6 +47,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	h := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	})
+	logger := slog.New(h)
+
 	taskRepo := taskrepo.New(databace)
 	taskSrv := task.New(taskRepo)
 
@@ -55,6 +65,14 @@ func main() {
 	authRouter := server.AuthRouter()
 	wsSrv := wshandlers.New(userFetcher)
 	wsSrv.Register(anonRouter)
+
+	tgBotAPI, err := tgbotapi.NewBotAPI(cfg.TgBotToken)
+	if err != nil {
+		panic(err)
+	}
+	tgBot := bot.New(userSrv, taskSrv, tgBotAPI, logger)
+	go tgBot.Updates()
+
 	taskhandlers.New(taskSrv, wsSrv).Register(authRouter)
 	userhandlers.New(userSrv, cfg.SecretJWT, userFetcher).Register(anonRouter, authRouter)
 

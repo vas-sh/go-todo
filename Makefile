@@ -5,7 +5,9 @@ run:
 int-test:
 	go test ./integration-tests/... -count=1
 unit-test:
-	go test ./internal/... -count=1 -cover
+	go test ./internal/... -count=1 -cover -coverprofile=coverage.out
+coverage:
+	go tool cover -html=coverage.out -o coverage.html
 create-db:
 	sudo docker run -e POSTGRES_DB=tododb -e POSTGRES_USER=todouser -e POSTGRES_PASSWORD=2222 -d -p 5432:5432 postgres:17.4-alpine3.21
 start-db:

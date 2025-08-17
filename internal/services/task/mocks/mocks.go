@@ -55,6 +55,22 @@ func (mr *MockrepoerMockRecorder) Create(ctx, res any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*Mockrepoer)(nil).Create), ctx, res)
 }
 
+// GetTask mocks base method.
+func (m *Mockrepoer) GetTask(ctx context.Context, userID, offset int64) (models.Task, bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTask", ctx, userID, offset)
+	ret0, _ := ret[0].(models.Task)
+	ret1, _ := ret[1].(bool)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetTask indicates an expected call of GetTask.
+func (mr *MockrepoerMockRecorder) GetTask(ctx, userID, offset any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTask", reflect.TypeOf((*Mockrepoer)(nil).GetTask), ctx, userID, offset)
+}
+
 // List mocks base method.
 func (m *Mockrepoer) List(ctx context.Context, userID int64) ([]models.Task, error) {
 	m.ctrl.T.Helper()

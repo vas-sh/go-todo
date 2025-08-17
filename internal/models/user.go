@@ -34,3 +34,9 @@ type UserActivation struct {
 	Date      time.Time
 	Activated bool
 }
+
+type BotUser struct {
+	UserID     int64
+	TelegramID int64
+	Token      string
+}

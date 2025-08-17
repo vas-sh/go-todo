@@ -13,6 +13,7 @@ type serviceer interface {
 	Remove(ctx context.Context, id int64) error
 	Login(ctx context.Context, email, password string) (models.User, error)
 	Activate(ctx context.Context, id uuid.UUID) (models.User, error)
+	CreateBotActivationToken(ctx context.Context, userID int64) (string, error)
 }
 
 type userFetcher interface {
@@ -43,4 +44,5 @@ func (h *handler) Register(anonRouter, authRouter *gin.RouterGroup) {
 
 	usersAuthRouter := authRouter.Group("users")
 	usersAuthRouter.DELETE("", h.remove)
+	usersAuthRouter.POST("/bot-token", h.botActivation)
 }

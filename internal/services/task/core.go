@@ -16,6 +16,7 @@ type repoer interface {
 	Statuses(ctx context.Context, userID, taskID int64) ([]models.TaskStatus, error)
 	ReportStatuses(ctx context.Context, userID int64) (models.CountStatus, error)
 	ReportCompletions(ctx context.Context, userID int64) (models.CountCompletion, error)
+	GetTask(ctx context.Context, userID, offset int64) (models.Task, bool, error)
 }
 
 type srv struct {

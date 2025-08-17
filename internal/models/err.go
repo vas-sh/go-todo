@@ -13,4 +13,5 @@ var (
 	ErrAlreadyExist      = errors.New("already exist")
 	ErrAlreadyActivated  = errors.New("user already activated")
 	ErrAlreadyExpired    = errors.New("already expired")
+	ErrNotFound          = errors.New("not found")
 )
