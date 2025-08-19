@@ -27,8 +27,8 @@ type boter interface {
 }
 
 type stickerFileID struct {
-	SuccessStickerFileID string
-	FailedStickerFileID  string
+	Congratulations string
+	Confused        string
 }
 
 type srv struct {
@@ -46,8 +46,8 @@ func New(userSrv userServicer, taskSrv taskServecer, bot boter, logger *slog.Log
 		taskSrv: taskSrv,
 		logger:  logger,
 		sticker: stickerFileID{
-			SuccessStickerFileID: "CAACAgEAAxkBAAIEbWigGoo5W2lk9Yy7e2hqF3g6EJaTAAKfAwACid9YRM6KQLzK3HtFNgQ",
-			FailedStickerFileID:  "CAACAgEAAxkBAAIEeGigIiNK1DJbtmr7j4Y7aXCvpUy5AAL-AgACgSIgRAmiojYO88U7NgQ",
+			Congratulations: "CAACAgUAAxkBAAIEhmigPPEh6bwWQYB6A0JgzzzCIZHgAAJvAwAC6QrIA6_OvtkCul10NgQ",
+			Confused:        "CAACAgUAAxkBAAIEhGigPLtGOfENzv8qeGg-PS-uUXqIAALmAwACFH85V3_n1pYszX-GNgQ",
 		},
 	}
 }

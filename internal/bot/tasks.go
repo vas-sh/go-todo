@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -15,15 +14,13 @@ type keyboardOps struct {
 	exist bool
 }
 
-func (s *srv) sendTaskMessage(ctx context.Context, chatID int64) {
+func (s *srv) sendTaskMessage(ctx context.Context, chatID int64) error {
 	task, nextExist, err := s.getTask(ctx, chatID, 0)
 	if errors.Is(err, models.ErrNotFound) {
-		s.sendTextMessage(ctx, chatID, "You don't have any tasks yet")
-		return
+		return s.sendTextMessage(chatID, "You don't have any tasks yet")
 	}
 	if err != nil {
-		s.sendTextMessage(ctx, chatID, "Fall to get tasks")
-		return
+		return err
 	}
 	keyboard := s.keyboard(0, keyboardOps{exist: nextExist})
 	taskBody := s.taskFormat(task)
@@ -31,19 +28,15 @@ func (s *srv) sendTaskMessage(ctx context.Context, chatID int64) {
 	msg.ReplyMarkup = keyboard
 	msg.ParseMode = tgbotapi.ModeHTML
 	_, err = s.bot.Send(msg)
-	if err != nil {
-		s.logger.ErrorContext(ctx, "failed send message: ", slog.Any("error", err))
-	}
+	return err
 }
 
-func (s *srv) refreshTaskMessage(ctx context.Context, chatID int64, messageID, page int) {
+func (s *srv) refreshTaskMessage(ctx context.Context, chatID int64, messageID, page int) error {
 	task, nextExist, err := s.getTask(ctx, chatID, int64(page))
 	if err != nil {
+		s.logger.ErrorContext(ctx, err.Error())
 		_, err = s.bot.Send(tgbotapi.NewEditMessageText(chatID, messageID, "You don't have the next task"))
-		if err != nil {
-			s.logger.WarnContext(ctx, "failed refresh message: ", slog.Any("error", err))
-		}
-		return
+		return err
 	}
 	keyboard := s.keyboard(page, keyboardOps{exist: nextExist})
 	taskBody := s.taskFormat(task)
@@ -51,9 +44,7 @@ func (s *srv) refreshTaskMessage(ctx context.Context, chatID int64, messageID, p
 	msg.ParseMode = tgbotapi.ModeHTML
 	msg.ReplyMarkup = &keyboard
 	_, err = s.bot.Send(msg)
-	if err != nil {
-		s.logger.WarnContext(ctx, "failed refresh message: ", slog.Any("error", err))
-	}
+	return err
 }
 
 func (s *srv) getTask(ctx context.Context, chatID, page int64) (models.Task, bool, error) {

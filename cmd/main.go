@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"log/slog"
 	"os"
@@ -23,6 +24,8 @@ import (
 )
 
 func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	cfg := config.Config
 	mailSrv, err := mail.New(cfg.MailLogin, cfg.MailPassword, cfg.MailHost, cfg.MailPort)
 	if err != nil {
@@ -48,9 +51,7 @@ func main() {
 		panic(err)
 	}
 
-	h := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelDebug,
-	})
+	h := slog.NewJSONHandler(os.Stdout, nil)
 	logger := slog.New(h)
 
 	taskRepo := taskrepo.New(databace)
@@ -70,8 +71,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	tgBotAPI.Debug = true
 	tgBot := bot.New(userSrv, taskSrv, tgBotAPI, logger)
-	go tgBot.Updates()
+	go tgBot.Updates(ctx)
 
 	taskhandlers.New(taskSrv, wsSrv).Register(authRouter)
 	userhandlers.New(userSrv, cfg.SecretJWT, userFetcher).Register(anonRouter, authRouter)

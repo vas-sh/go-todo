@@ -14,60 +14,92 @@ import (
 )
 
 func TestAuthorizeInvalidAuth(t *testing.T) {
+	// arrange
 	auth := "starttoken123"
 	ctrl := gomock.NewController(t)
-	mockUserSrv := mocks.NewMockuserServicer(ctrl)
 	mockBotSrv := mocks.NewMockboter(ctrl)
-	mockTaskSrv := mocks.NewMocktaskServecer(ctrl)
+	h := slog.NewJSONHandler(os.Stdout, nil)
+	s := New(nil, nil, mockBotSrv, slog.New(h))
+	mockBotSrv.EXPECT().Send(gomock.Any()).DoAndReturn(func(c tgbotapi.Chattable) (tgbotapi.Message, error) {
+		sticker := c.(tgbotapi.StickerConfig)
+		if string(sticker.File.(tgbotapi.FileID)) != s.sticker.Confused {
+			t.Errorf("expected confused sticker, got: %s", sticker.File)
+		}
+		return tgbotapi.Message{}, nil
+	})
 
-	h := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{})
-	s := New(mockUserSrv, mockTaskSrv, mockBotSrv, slog.New(h))
+	// act
 	s.authorize(context.Background(), 0, auth)
 }
 
 func TestAuthorizeTokenNotFound(t *testing.T) {
+	// arrange
+	ctx := context.Background()
 	auth := "start token123"
 	ctrl := gomock.NewController(t)
 
 	mockUserSrv := mocks.NewMockuserServicer(ctrl)
 	mockBotSrv := mocks.NewMockboter(ctrl)
 
-	mockUserSrv.EXPECT().FindBotUser(context.Background(), "token123").Return(models.BotUser{}, models.ErrNotFound)
+	mockUserSrv.EXPECT().FindBotUser(ctx, "token123").Return(models.BotUser{}, models.ErrNotFound)
 	mockBotSrv.EXPECT().Send(gomock.Any()).Return(tgbotapi.Message{}, nil)
+	h := slog.NewJSONHandler(os.Stdout, nil)
 
-	h := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{})
+	// act
 	s := New(mockUserSrv, nil, mockBotSrv, slog.New(h))
-	s.authorize(context.Background(), 0, auth)
+	err := s.authorize(ctx, 0, auth)
+
+	// assert
+	if err != nil {
+		t.Errorf("unexpected error: %s", err)
+	}
 }
 
 func TestAuthorizeDatabaceError(t *testing.T) {
+	// arrange
+	ctx := context.Background()
 	auth := "start token123"
 	ctrl := gomock.NewController(t)
 
 	mockUserSrv := mocks.NewMockuserServicer(ctrl)
 	mockBotSrv := mocks.NewMockboter(ctrl)
 
-	mockUserSrv.EXPECT().FindBotUser(context.Background(), "token123").Return(models.BotUser{}, nil)
-	mockUserSrv.EXPECT().AddTelegramID(context.Background(), gomock.Any(), gomock.Any()).Return(errors.New("some error"))
+	mockUserSrv.EXPECT().FindBotUser(ctx, "token123").Return(models.BotUser{}, nil)
+	mockUserSrv.EXPECT().AddTelegramID(ctx, gomock.Any(), gomock.Any()).Return(errors.New("databace error"))
 	mockBotSrv.EXPECT().Send(gomock.Any()).Return(tgbotapi.Message{}, nil)
 
-	h := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{})
+	h := slog.NewJSONHandler(os.Stdout, nil)
+
+	// act
 	s := New(mockUserSrv, nil, mockBotSrv, slog.New(h))
-	s.authorize(context.Background(), 0, auth)
+	err := s.authorize(ctx, 0, auth)
+
+	// assert
+	if err != nil {
+		t.Errorf("unexpected error: %s", err)
+	}
 }
 
 func TestAuthorizeSuccess(t *testing.T) {
+	// arrange
+	ctx := context.Background()
 	auth := "start token123"
 	ctrl := gomock.NewController(t)
 
 	mockUserSrv := mocks.NewMockuserServicer(ctrl)
 	mockBotSrv := mocks.NewMockboter(ctrl)
 
-	mockUserSrv.EXPECT().FindBotUser(context.Background(), "token123").Return(models.BotUser{}, nil)
-	mockUserSrv.EXPECT().AddTelegramID(context.Background(), gomock.Any(), gomock.Any()).Return(nil)
+	mockUserSrv.EXPECT().FindBotUser(ctx, "token123").Return(models.BotUser{}, nil)
+	mockUserSrv.EXPECT().AddTelegramID(ctx, gomock.Any(), gomock.Any()).Return(nil)
 	mockBotSrv.EXPECT().Send(gomock.Any()).Return(tgbotapi.Message{}, nil)
+	h := slog.NewJSONHandler(os.Stdout, nil)
 
-	h := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{})
+	// act
 	s := New(mockUserSrv, nil, mockBotSrv, slog.New(h))
-	s.authorize(context.Background(), 0, auth)
+	err := s.authorize(ctx, 0, auth)
+
+	// assert
+	if err != nil {
+		t.Errorf("unexpected error: %s", err)
+	}
 }
