@@ -29,7 +29,12 @@ func TestAuthorizeInvalidAuth(t *testing.T) {
 	})
 
 	// act
-	s.authorize(context.Background(), 0, auth)
+	err := s.authorize(context.Background(), 0, auth)
+
+	// assert
+	if err != nil {
+		t.Errorf("unexpected error: %s", err)
+	}
 }
 
 func TestAuthorizeTokenNotFound(t *testing.T) {
