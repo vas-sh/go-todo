@@ -20,13 +20,14 @@ func TestAuthorizeInvalidAuth(t *testing.T) {
 	mockBotSrv := mocks.NewMockboter(ctrl)
 	h := slog.NewJSONHandler(os.Stdout, nil)
 	s := New(nil, nil, mockBotSrv, slog.New(h))
-	mockBotSrv.EXPECT().Send(gomock.Any()).DoAndReturn(func(c tgbotapi.Chattable) (tgbotapi.Message, error) {
-		sticker := c.(tgbotapi.StickerConfig)
-		if string(sticker.File.(tgbotapi.FileID)) != s.sticker.Confused {
-			t.Errorf("expected confused sticker, got: %s", sticker.File)
-		}
-		return tgbotapi.Message{}, nil
-	})
+	mockBotSrv.EXPECT().Send(gomock.Any()).
+		DoAndReturn(func(c tgbotapi.Chattable) (tgbotapi.Message, error) {
+			sticker := c.(tgbotapi.StickerConfig)
+			if string(sticker.File.(tgbotapi.FileID)) != s.sticker.Confused {
+				t.Errorf("expected confused sticker, got: %s", sticker.File)
+			}
+			return tgbotapi.Message{}, nil
+		})
 
 	// act
 	err := s.authorize(context.Background(), 0, auth)
@@ -47,11 +48,19 @@ func TestAuthorizeTokenNotFound(t *testing.T) {
 	mockBotSrv := mocks.NewMockboter(ctrl)
 
 	mockUserSrv.EXPECT().FindBotUser(ctx, "token123").Return(models.BotUser{}, models.ErrNotFound)
-	mockBotSrv.EXPECT().Send(gomock.Any()).Return(tgbotapi.Message{}, nil)
 	h := slog.NewJSONHandler(os.Stdout, nil)
+	s := New(mockUserSrv, nil, mockBotSrv, slog.New(h))
+	mockBotSrv.EXPECT().Send(gomock.Any()).
+		DoAndReturn(func(c tgbotapi.Chattable) (tgbotapi.Message, error) {
+			sticker := c.(tgbotapi.StickerConfig)
+			if string(sticker.File.(tgbotapi.FileID)) != s.sticker.Confused {
+				t.Errorf("expected confused sticker, got: %s", sticker.File)
+			}
+			return tgbotapi.Message{}, nil
+		}).
+		Return(tgbotapi.Message{}, nil)
 
 	// act
-	s := New(mockUserSrv, nil, mockBotSrv, slog.New(h))
 	err := s.authorize(ctx, 0, auth)
 
 	// assert
@@ -71,12 +80,19 @@ func TestAuthorizeDatabaceError(t *testing.T) {
 
 	mockUserSrv.EXPECT().FindBotUser(ctx, "token123").Return(models.BotUser{}, nil)
 	mockUserSrv.EXPECT().AddTelegramID(ctx, gomock.Any(), gomock.Any()).Return(errors.New("databace error"))
-	mockBotSrv.EXPECT().Send(gomock.Any()).Return(tgbotapi.Message{}, nil)
-
 	h := slog.NewJSONHandler(os.Stdout, nil)
+	s := New(mockUserSrv, nil, mockBotSrv, slog.New(h))
+	mockBotSrv.EXPECT().Send(gomock.Any()).
+		DoAndReturn(func(c tgbotapi.Chattable) (tgbotapi.Message, error) {
+			sticker := c.(tgbotapi.StickerConfig)
+			if string(sticker.File.(tgbotapi.FileID)) != s.sticker.Confused {
+				t.Errorf("expected confused sticker, got: %s", sticker.File)
+			}
+			return tgbotapi.Message{}, nil
+		}).
+		Return(tgbotapi.Message{}, nil)
 
 	// act
-	s := New(mockUserSrv, nil, mockBotSrv, slog.New(h))
 	err := s.authorize(ctx, 0, auth)
 
 	// assert
@@ -96,11 +112,19 @@ func TestAuthorizeSuccess(t *testing.T) {
 
 	mockUserSrv.EXPECT().FindBotUser(ctx, "token123").Return(models.BotUser{}, nil)
 	mockUserSrv.EXPECT().AddTelegramID(ctx, gomock.Any(), gomock.Any()).Return(nil)
-	mockBotSrv.EXPECT().Send(gomock.Any()).Return(tgbotapi.Message{}, nil)
 	h := slog.NewJSONHandler(os.Stdout, nil)
+	s := New(mockUserSrv, nil, mockBotSrv, slog.New(h))
+	mockBotSrv.EXPECT().Send(gomock.Any()).
+		DoAndReturn(func(c tgbotapi.Chattable) (tgbotapi.Message, error) {
+			sticker := c.(tgbotapi.StickerConfig)
+			if string(sticker.File.(tgbotapi.FileID)) != s.sticker.Congratulations {
+				t.Errorf("expected confused sticker, got: %s", sticker.File)
+			}
+			return tgbotapi.Message{}, nil
+		}).
+		Return(tgbotapi.Message{}, nil)
 
 	// act
-	s := New(mockUserSrv, nil, mockBotSrv, slog.New(h))
 	err := s.authorize(ctx, 0, auth)
 
 	// assert

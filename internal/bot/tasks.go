@@ -73,7 +73,7 @@ func (*srv) statusFormat(task models.Task) string {
 	case models.NewStatus:
 		return "🟡 New"
 	case models.InProgressStatus:
-		return "🟡  In progress"
+		return "🟡 In progress"
 	case models.DoneStatus:
 		return "🟢 Done"
 	case models.CanceledStatus:
