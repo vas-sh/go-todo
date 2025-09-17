@@ -292,8 +292,8 @@ func (s *srv) getDateAndPageFromCallback(ctx context.Context, data string) (date
 
 func (*srv) minutesKeyboard(date string, page int) tgbotapi.InlineKeyboardMarkup {
 	minMinutes, maxMinutes := (page-1)*20, page*20
-
 	var rows [][]tgbotapi.InlineKeyboardButton
+	//nolint:prealloc // rows have dynamic size
 	var row []tgbotapi.InlineKeyboardButton
 	for i := minMinutes; i < maxMinutes; i++ {
 		button := tgbotapi.NewInlineKeyboardButtonData(
@@ -309,9 +309,7 @@ func (*srv) minutesKeyboard(date string, page int) tgbotapi.InlineKeyboardMarkup
 	if len(row) > 0 {
 		rows = append(rows, row)
 	}
-
 	var optionsBtns []tgbotapi.InlineKeyboardButton
-
 	if page > 1 {
 		optionsBtns = append(optionsBtns, tgbotapi.NewInlineKeyboardButtonData(
 			"Prev",
@@ -322,7 +320,6 @@ func (*srv) minutesKeyboard(date string, page int) tgbotapi.InlineKeyboardMarkup
 			"Next",
 			fmt.Sprintf("%s:%d:%s", models.NextPageButtonType, page+1, date)))
 	}
-
 	rows = append(rows, optionsBtns)
 	return tgbotapi.NewInlineKeyboardMarkup(rows...)
 }
