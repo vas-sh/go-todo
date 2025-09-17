@@ -362,7 +362,7 @@ func TestKeyboard(t *testing.T) {
 
 			// act
 			s := New(nil, nil, nil, slog.New(h))
-			got := s.keyboard(ts.page, ts.ops)
+			got := s.listKeyboard(ts.page, ts.ops)
 
 			// assert
 			if !reflect.DeepEqual(ts.want, got) {

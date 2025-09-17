@@ -55,6 +55,62 @@ func (mr *MockrepoerMockRecorder) Create(ctx, res any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*Mockrepoer)(nil).Create), ctx, res)
 }
 
+// CreateFromDruft mocks base method.
+func (m *Mockrepoer) CreateFromDruft(ctx context.Context, userID int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateFromDruft", ctx, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateFromDruft indicates an expected call of CreateFromDruft.
+func (mr *MockrepoerMockRecorder) CreateFromDruft(ctx, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateFromDruft", reflect.TypeOf((*Mockrepoer)(nil).CreateFromDruft), ctx, userID)
+}
+
+// CreateTaskDruft mocks base method.
+func (m *Mockrepoer) CreateTaskDruft(ctx context.Context, body models.TaskDruft) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateTaskDruft", ctx, body)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateTaskDruft indicates an expected call of CreateTaskDruft.
+func (mr *MockrepoerMockRecorder) CreateTaskDruft(ctx, body any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTaskDruft", reflect.TypeOf((*Mockrepoer)(nil).CreateTaskDruft), ctx, body)
+}
+
+// DeleteTaskDruft mocks base method.
+func (m *Mockrepoer) DeleteTaskDruft(ctx context.Context, userID int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTaskDruft", ctx, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTaskDruft indicates an expected call of DeleteTaskDruft.
+func (mr *MockrepoerMockRecorder) DeleteTaskDruft(ctx, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTaskDruft", reflect.TypeOf((*Mockrepoer)(nil).DeleteTaskDruft), ctx, userID)
+}
+
+// FindTaskDruft mocks base method.
+func (m *Mockrepoer) FindTaskDruft(ctx context.Context, userID int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindTaskDruft", ctx, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// FindTaskDruft indicates an expected call of FindTaskDruft.
+func (mr *MockrepoerMockRecorder) FindTaskDruft(ctx, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindTaskDruft", reflect.TypeOf((*Mockrepoer)(nil).FindTaskDruft), ctx, userID)
+}
+
 // GetTask mocks base method.
 func (m *Mockrepoer) GetTask(ctx context.Context, userID, offset int64) (models.Task, bool, error) {
 	m.ctrl.T.Helper()
@@ -69,6 +125,21 @@ func (m *Mockrepoer) GetTask(ctx context.Context, userID, offset int64) (models.
 func (mr *MockrepoerMockRecorder) GetTask(ctx, userID, offset any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTask", reflect.TypeOf((*Mockrepoer)(nil).GetTask), ctx, userID, offset)
+}
+
+// GetTaskDruftStatus mocks base method.
+func (m *Mockrepoer) GetTaskDruftStatus(ctx context.Context, userID int64) (models.UserStatus, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTaskDruftStatus", ctx, userID)
+	ret0, _ := ret[0].(models.UserStatus)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTaskDruftStatus indicates an expected call of GetTaskDruftStatus.
+func (mr *MockrepoerMockRecorder) GetTaskDruftStatus(ctx, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTaskDruftStatus", reflect.TypeOf((*Mockrepoer)(nil).GetTaskDruftStatus), ctx, userID)
 }
 
 // List mocks base method.
@@ -157,4 +228,18 @@ func (m *Mockrepoer) Update(ctx context.Context, body models.Task, userID, taskI
 func (mr *MockrepoerMockRecorder) Update(ctx, body, userID, taskID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*Mockrepoer)(nil).Update), ctx, body, userID, taskID)
+}
+
+// UpdateTaskDruft mocks base method.
+func (m *Mockrepoer) UpdateTaskDruft(ctx context.Context, body models.TaskDruft) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateTaskDruft", ctx, body)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateTaskDruft indicates an expected call of UpdateTaskDruft.
+func (mr *MockrepoerMockRecorder) UpdateTaskDruft(ctx, body any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTaskDruft", reflect.TypeOf((*Mockrepoer)(nil).UpdateTaskDruft), ctx, body)
 }

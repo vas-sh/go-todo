@@ -146,7 +146,7 @@ func TestManageUpdateTextMassageListCommand(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	wantErr := errors.New("some error")
 	mockUserSrv := mocks.NewMockuserServicer(ctrl)
-	mockUserSrv.EXPECT().GetUserID(gomock.Any(), gomock.Any()).Return(int64(0), wantErr)
+	mockUserSrv.EXPECT().GetUserID(gomock.Any(), gomock.Any()).Return(int64(0), wantErr).Times(2)
 	var buf bytes.Buffer
 	h := slog.NewTextHandler(&buf, &slog.HandlerOptions{})
 
@@ -183,6 +183,7 @@ func TestManageUpdateCallback(t *testing.T) {
 		Do(func(msg tgbotapi.Chattable) {
 			gotMsg = msg.(tgbotapi.EditMessageTextConfig).Text
 		}).Return(tgbotapi.Message{}, errors.New("failed to send"))
+	mockBotSrv.EXPECT().Request(gomock.Any()).Return(nil, nil)
 	h := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{})
 
 	// act
@@ -201,14 +202,18 @@ func TestHandleTaskCallbackEmptyData(t *testing.T) {
 
 	// act
 	s := New(nil, nil, nil, slog.New(h))
-	ok, err := s.handleTaskCallback(context.Background(), &tgbotapi.CallbackQuery{
+	callback := &tgbotapi.CallbackQuery{
 		Data: "",
-	})
+		Message: &tgbotapi.Message{
+			MessageID: 0,
+			Chat: &tgbotapi.Chat{
+				ID: 0,
+			},
+		},
+	}
+	err := s.handleTaskCallback(context.Background(), callback)
 
 	// assert
-	if ok {
-		t.Errorf("expected false, got true")
-	}
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
 	}

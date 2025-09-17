@@ -24,11 +24,11 @@ func (s *srv) Updates(ctx context.Context) {
 func (s *srv) createMenu(ctx context.Context) {
 	commands := []tgbotapi.BotCommand{
 		{
-			Command:     "tasks",
+			Command:     string(models.TaskListCommand),
 			Description: "Show task list",
 		},
 		{
-			Command:     "create",
+			Command:     string(models.CreateTaskCommand),
 			Description: "Create new task",
 		},
 	}
@@ -47,6 +47,11 @@ func (s *srv) manageUpdate(update tgbotapi.Update) {
 		return
 	}
 	if update.CallbackQuery != nil {
+		callback := tgbotapi.NewCallback(update.CallbackQuery.ID, "")
+		_, err := s.bot.Request(callback)
+		if err != nil {
+			s.logger.ErrorContext(ctx, err.Error())
+		}
 		s.handleCallback(ctx, update.CallbackQuery)
 	}
 }
@@ -60,29 +65,112 @@ func (s *srv) handleTextMessage(ctx context.Context, message *tgbotapi.Message) 
 		return
 	}
 	if message.Text == string(models.TaskListCommand) {
-		err := s.sendTaskMessage(ctx, message.From.ID)
+		err := s.list(ctx, message.From.ID)
+		if err != nil {
+			s.logger.ErrorContext(ctx, err.Error())
+		}
+	}
+	if message.Text == string(models.CreateTaskCommand) {
+		err := s.createTaskDruft(ctx, message.From.ID)
 		if err != nil {
 			s.logger.ErrorContext(ctx, err.Error())
 		}
 		return
 	}
+	err := s.manageTextMassage(ctx, *message)
+	if err != nil {
+		s.logger.ErrorContext(ctx, err.Error())
+	}
 }
 
 func (s *srv) handleCallback(ctx context.Context, callback *tgbotapi.CallbackQuery) {
-	_, err := s.handleTaskCallback(ctx, callback)
+	err := s.handleTaskCallback(ctx, callback)
 	if err != nil {
 		s.logger.ErrorContext(ctx, err.Error())
 		return
 	}
 }
 
-func (s *srv) handleTaskCallback(ctx context.Context, callback *tgbotapi.CallbackQuery) (bool, error) {
-	if !strings.HasPrefix(callback.Data, string(models.NextButtonType)) &&
-		!strings.HasPrefix(callback.Data, string(models.PrevButtonType)) {
-		return false, nil
+func (s *srv) handleTaskCallback(ctx context.Context, callback *tgbotapi.CallbackQuery) error {
+	data := callback.Data
+	chatID := callback.Message.Chat.ID
+	messageID := callback.Message.MessageID
+	switch data {
+	case string(models.CancelButtonType):
+		err := s.deleteTaskDruft(ctx, chatID)
+		if err != nil {
+			return err
+		}
+		return s.deleteMessage(chatID, messageID)
+	case string(models.NewStatus),
+		string(models.InProgressStatus),
+		string(models.DoneStatus),
+		string(models.CanceledStatus):
+		return s.addStatusToDruft(ctx, chatID, data, messageID)
+	case string(models.CreateButtonType):
+		return s.createFromDruft(ctx, chatID)
 	}
-	page := s.getPage(ctx, callback.Data)
-	return true, s.refreshTaskMessage(ctx, callback.Message.Chat.ID, callback.Message.MessageID, page)
+	return s.checkCallbackPrefix(ctx, chatID, messageID, data)
+}
+
+func (s *srv) checkCallbackPrefix(ctx context.Context, chatID int64, messageID int, data string) error {
+	handlers := []struct {
+		prefixes []string
+		handler  func(ctx context.Context, chatID int64, messageID int, data string) error
+	}{
+		{
+			prefixes: []string{
+				string(models.NextButtonType),
+				string(models.PrevButtonType),
+			},
+			handler: func(ctx context.Context, chatID int64, messageID int, data string) error {
+				page := s.getPage(ctx, data)
+				return s.refreshTaskMessage(ctx, chatID, messageID, page)
+			},
+		},
+		{
+			prefixes: []string{string(models.YearButtonType)},
+			handler:  s.selectMonth,
+		},
+		{
+			prefixes: []string{string(models.MonthButtonType)},
+			handler:  s.selectDay,
+		},
+		{
+			prefixes: []string{
+				string(models.NextYearButtonType),
+				string(models.PrevYearButtonType),
+			},
+			handler: s.selectYear,
+		},
+		{
+			prefixes: []string{string(models.DayButtonType)},
+			handler:  s.selectHour,
+		},
+		{
+			prefixes: []string{string(models.HourButtonType)},
+			handler:  s.selectMinutes,
+		},
+		{
+			prefixes: []string{string(models.MinutesButtonType)},
+			handler:  s.addEstimateTimeToDruft,
+		},
+		{
+			prefixes: []string{
+				string(models.NextPageButtonType),
+				string(models.PrevPageButtonType),
+			},
+			handler: s.updateMinutesMessage,
+		},
+	}
+	for i := range handlers {
+		for j := range handlers[i].prefixes {
+			if strings.HasPrefix(data, handlers[i].prefixes[j]) {
+				return handlers[i].handler(ctx, chatID, messageID, data)
+			}
+		}
+	}
+	return nil
 }
 
 func (s *srv) getPage(ctx context.Context, data string) int {

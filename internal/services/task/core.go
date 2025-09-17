@@ -17,6 +17,12 @@ type repoer interface {
 	ReportStatuses(ctx context.Context, userID int64) (models.CountStatus, error)
 	ReportCompletions(ctx context.Context, userID int64) (models.CountCompletion, error)
 	GetTask(ctx context.Context, userID, offset int64) (models.Task, bool, error)
+	CreateTaskDruft(ctx context.Context, body models.TaskDruft) error
+	GetTaskDruftStatus(ctx context.Context, userID int64) (models.UserStatus, error)
+	UpdateTaskDruft(ctx context.Context, body models.TaskDruft) error
+	FindTaskDruft(ctx context.Context, userID int64) error
+	DeleteTaskDruft(ctx context.Context, userID int64) error
+	CreateFromDruft(ctx context.Context, userID int64) error
 }
 
 type srv struct {

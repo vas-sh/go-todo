@@ -42,3 +42,13 @@ type Task struct {
 	User         User       `gorm:"constraint:OnDelete:CASCADE;"`
 	EstimateTime *time.Time `json:"estimateTime"`
 }
+
+type TaskDruft struct {
+	ID           int64      `json:"id" gorm:"primary_key"`
+	Title        string     `json:"title"`
+	Description  string     `json:"description"`
+	Status       Status     `json:"status" gorm:"type:task_status"`
+	UserID       int64      `json:"user_id"`
+	EstimateTime *time.Time `json:"estimateTime"`
+	UserStatus   string     `json:"user_status"`
+}

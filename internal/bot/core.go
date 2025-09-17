@@ -18,6 +18,12 @@ type userServicer interface {
 
 type taskServecer interface {
 	GetTask(ctx context.Context, userID, index int64) (models.Task, bool, error)
+	CreateTaskDruft(ctx context.Context, body models.TaskDruft) error
+	GetTaskDruftStatus(ctx context.Context, userID int64) (models.UserStatus, error)
+	UpdateTaskDruft(ctx context.Context, body models.TaskDruft) error
+	FindTaskDruft(ctx context.Context, userID int64) error
+	DeleteTaskDruft(ctx context.Context, userID int64) error
+	CreateFromDruft(ctx context.Context, userID int64) error
 }
 
 type boter interface {

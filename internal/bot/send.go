@@ -15,3 +15,31 @@ func (s *srv) sendSticker(chatID int64, sticker string) error {
 	_, err := s.bot.Send(msg)
 	return err
 }
+
+func (s *srv) sendTextMassageWithKeyboard(chatID int64, text string, keyboard tgbotapi.InlineKeyboardMarkup) error {
+	msg := tgbotapi.NewMessage(chatID, text)
+	msg.ReplyMarkup = keyboard
+	_, err := s.bot.Send(msg)
+	return err
+}
+
+func (s *srv) refreshTextMassageWithKeyboard(
+	chatID int64, keyboard tgbotapi.InlineKeyboardMarkup, messageID int, text string,
+) error {
+	msg := tgbotapi.NewEditMessageText(chatID, messageID, text)
+	msg.ReplyMarkup = &keyboard
+	_, err := s.bot.Send(msg)
+	return err
+}
+
+func (s *srv) refreshMassage(chatID int64, messageID int, text string) error {
+	msg := tgbotapi.NewEditMessageText(chatID, messageID, text)
+	_, err := s.bot.Send(msg)
+	return err
+}
+
+func (s *srv) deleteMessage(chatID int64, messageID int) error {
+	deleteMsg := tgbotapi.NewDeleteMessage(chatID, messageID)
+	_, err := s.bot.Request(deleteMsg)
+	return err
+}

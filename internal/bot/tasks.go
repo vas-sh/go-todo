@@ -14,6 +14,18 @@ type keyboardOps struct {
 	exist bool
 }
 
+func (s *srv) list(ctx context.Context, chatID int64) error {
+	userID, err := s.userSrv.GetUserID(ctx, chatID)
+	if err != nil {
+		return err
+	}
+	err = s.taskSrv.DeleteTaskDruft(ctx, userID)
+	if err != nil {
+		return err
+	}
+	return s.sendTaskMessage(ctx, chatID)
+}
+
 func (s *srv) sendTaskMessage(ctx context.Context, chatID int64) error {
 	task, nextExist, err := s.getTask(ctx, chatID, 0)
 	if errors.Is(err, models.ErrNotFound) {
@@ -22,7 +34,7 @@ func (s *srv) sendTaskMessage(ctx context.Context, chatID int64) error {
 	if err != nil {
 		return err
 	}
-	keyboard := s.keyboard(0, keyboardOps{exist: nextExist})
+	keyboard := s.listKeyboard(0, keyboardOps{exist: nextExist})
 	taskBody := s.taskFormat(task)
 	msg := tgbotapi.NewMessage(chatID, taskBody)
 	msg.ReplyMarkup = keyboard
@@ -38,7 +50,7 @@ func (s *srv) refreshTaskMessage(ctx context.Context, chatID int64, messageID, p
 		_, err = s.bot.Send(tgbotapi.NewEditMessageText(chatID, messageID, "You don't have the next task"))
 		return err
 	}
-	keyboard := s.keyboard(page, keyboardOps{exist: nextExist})
+	keyboard := s.listKeyboard(page, keyboardOps{exist: nextExist})
 	taskBody := s.taskFormat(task)
 	msg := tgbotapi.NewEditMessageText(chatID, messageID, taskBody)
 	msg.ParseMode = tgbotapi.ModeHTML
@@ -89,7 +101,7 @@ func (*srv) timeFormat(task models.Task) string {
 	return fmt.Sprintf("\nDeadline: %s (%.0f days)", task.EstimateTime.Format("02/01/2006 15:04"), days)
 }
 
-func (*srv) keyboard(page int, ops keyboardOps) tgbotapi.InlineKeyboardMarkup {
+func (*srv) listKeyboard(page int, ops keyboardOps) tgbotapi.InlineKeyboardMarkup {
 	var buttons []tgbotapi.InlineKeyboardButton
 	if page > 0 {
 		buttons = append(buttons, tgbotapi.

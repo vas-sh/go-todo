@@ -110,6 +110,62 @@ func (m *MocktaskServecer) EXPECT() *MocktaskServecerMockRecorder {
 	return m.recorder
 }
 
+// CreateFromDruft mocks base method.
+func (m *MocktaskServecer) CreateFromDruft(ctx context.Context, userID int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateFromDruft", ctx, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateFromDruft indicates an expected call of CreateFromDruft.
+func (mr *MocktaskServecerMockRecorder) CreateFromDruft(ctx, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateFromDruft", reflect.TypeOf((*MocktaskServecer)(nil).CreateFromDruft), ctx, userID)
+}
+
+// CreateTaskDruft mocks base method.
+func (m *MocktaskServecer) CreateTaskDruft(ctx context.Context, body models.TaskDruft) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateTaskDruft", ctx, body)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateTaskDruft indicates an expected call of CreateTaskDruft.
+func (mr *MocktaskServecerMockRecorder) CreateTaskDruft(ctx, body any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTaskDruft", reflect.TypeOf((*MocktaskServecer)(nil).CreateTaskDruft), ctx, body)
+}
+
+// DeleteTaskDruft mocks base method.
+func (m *MocktaskServecer) DeleteTaskDruft(ctx context.Context, userID int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTaskDruft", ctx, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTaskDruft indicates an expected call of DeleteTaskDruft.
+func (mr *MocktaskServecerMockRecorder) DeleteTaskDruft(ctx, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTaskDruft", reflect.TypeOf((*MocktaskServecer)(nil).DeleteTaskDruft), ctx, userID)
+}
+
+// FindTaskDruft mocks base method.
+func (m *MocktaskServecer) FindTaskDruft(ctx context.Context, userID int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindTaskDruft", ctx, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// FindTaskDruft indicates an expected call of FindTaskDruft.
+func (mr *MocktaskServecerMockRecorder) FindTaskDruft(ctx, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindTaskDruft", reflect.TypeOf((*MocktaskServecer)(nil).FindTaskDruft), ctx, userID)
+}
+
 // GetTask mocks base method.
 func (m *MocktaskServecer) GetTask(ctx context.Context, userID, index int64) (models.Task, bool, error) {
 	m.ctrl.T.Helper()
@@ -124,6 +180,35 @@ func (m *MocktaskServecer) GetTask(ctx context.Context, userID, index int64) (mo
 func (mr *MocktaskServecerMockRecorder) GetTask(ctx, userID, index any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTask", reflect.TypeOf((*MocktaskServecer)(nil).GetTask), ctx, userID, index)
+}
+
+// GetTaskDruftStatus mocks base method.
+func (m *MocktaskServecer) GetTaskDruftStatus(ctx context.Context, userID int64) (models.UserStatus, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTaskDruftStatus", ctx, userID)
+	ret0, _ := ret[0].(models.UserStatus)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTaskDruftStatus indicates an expected call of GetTaskDruftStatus.
+func (mr *MocktaskServecerMockRecorder) GetTaskDruftStatus(ctx, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTaskDruftStatus", reflect.TypeOf((*MocktaskServecer)(nil).GetTaskDruftStatus), ctx, userID)
+}
+
+// UpdateTaskDruft mocks base method.
+func (m *MocktaskServecer) UpdateTaskDruft(ctx context.Context, body models.TaskDruft) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateTaskDruft", ctx, body)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateTaskDruft indicates an expected call of UpdateTaskDruft.
+func (mr *MocktaskServecerMockRecorder) UpdateTaskDruft(ctx, body any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTaskDruft", reflect.TypeOf((*MocktaskServecer)(nil).UpdateTaskDruft), ctx, body)
 }
 
 // Mockboter is a mock of boter interface.
